@@ -91,7 +91,7 @@ module.exports = {
       // user: 'blackmatch',
       // password: 'admin123',
       user: 'root',
-      password: '123456',
+      password: 'admin123',
       database: 'transbox',
       timezone: 'Asia/Beijing',
 
