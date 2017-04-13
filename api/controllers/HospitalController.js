@@ -15,7 +15,7 @@ module.exports = {
 	create: function(req, res) {
 		Transaction.start(function(err, transaction) {
 			if (err) {
-				// the first error might even fail to return a transaction object, so double-check. 
+				// the first error might even fail to return a transaction object, so double-check.
 				transaction && transaction.rollback();
 				BaseController.sendDbError(err, res);
 				return;
@@ -182,6 +182,7 @@ module.exports = {
 
 			if (record) {
 				var hosp = Hospital.detailInfo(record);
+				console.log(record);
 				BaseController.sendOk('获取医院详情成功', record, res);
 
 			} else {
@@ -250,7 +251,7 @@ module.exports = {
 
 		Transaction.start(function(err, transaction) {
 			if (err) {
-				// the first error might even fail to return a transaction object, so double-check. 
+				// the first error might even fail to return a transaction object, so double-check.
 				transaction && transaction.rollback();
 				BaseController.sendDbError(err, res);
 				return;
@@ -436,7 +437,7 @@ module.exports = {
 					});
 
 				} else {
-					
+
 				}
 			});
 		});

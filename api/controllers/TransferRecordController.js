@@ -14,7 +14,7 @@ module.exports = {
 			BaseController.sendBadParams(res);
 			return;
 		}
-        
+
 		var successIds = [];
 		async.mapSeries(req.body.records, function(oneRecord, callback) {
 			var findParams = {
@@ -27,7 +27,7 @@ module.exports = {
 					BaseController.sendOk('写入记录终止', successIds, res);
 					return;
 				}
-                
+
 				if (!createdOrFoundRecords) {
 					BaseController.sendOk('写入记录终止', successIds, res);
 					return;
@@ -101,6 +101,7 @@ module.exports = {
 			dbStatus: 'N',
 			sort: 'recordAt'
 		}
+    console.log("record111:");
 
 		TransferRecord.find(findRecordParams).exec(function(err, records) {
 			if (err) {
@@ -137,12 +138,14 @@ module.exports = {
 			return;
 		}
 		values.push(transferid);
+		console.log('gg:'+values);
+
 
 		var sql = 'select * from transferRecord where type & ? and transfer_id=? order by recordAt DESC';
 		var recordQueryAsync = Promise.promisify(TransferRecord.query);
 		recordQueryAsync(sql, values)
 			.then(function(records) {
-				console.log(records);
+				console.log(records.length);
 				var results = [];
 				for (var i = 0; i < records.length; i++) {
 					results.push(records[i].recordAt);

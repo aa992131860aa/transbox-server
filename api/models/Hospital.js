@@ -31,6 +31,9 @@ module.exports = {
 			type: 'string',
 			defaultsTo: ''
 		},
+    electricStatus: {
+      type: 'int'
+    },
 		grade: {
 			type: 'string',
 			defaultsTo: ''
@@ -103,7 +106,7 @@ module.exports = {
 		hosp.accountInfo = Account.info(hosp.account_id);
 		delete hosp['account_id'];
 		delete hosp['dbStatus'];
-		
+
 		return hosp;
 	},
 	getUpdateParams: function(params) {
@@ -117,9 +120,12 @@ module.exports = {
 			updateParams.district = params.district;
 		}
 
-		if (params.address && params.address.length > 0) {
-			updateParams.address = params.address;
+		if (params.electricStatus) {
+			updateParams.electricStatus = params.electricStatus;
 		}
+    if (params.address && params.address.length > 0) {
+      updateParams.address = params.address;
+    }
 
 		if (params.grade && params.grade.length > 0) {
 			updateParams.grade = params.grade;
