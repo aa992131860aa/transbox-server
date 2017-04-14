@@ -845,13 +845,13 @@ module.exports = {
       'tp.`name` tp_name,tp.phone tp_phone,tp.organType tp_organType,tp.createAt tp_createAt,tp.modifyAt tp_modifyAt,' +
       'op.opoid op_opoid,op.`name` op_name,op.district op_district,op.address op_address,op.grade op_grade,' +
       'op.contactPerson op_contactPerson,op.contactPhone op_contactPhone,op.remark op_remark,op.createAt ' +
-      'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferperson tp,opo op where ' +
+      'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferPerson tp,opo op where ' +
       't.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
       '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id '+condition+' ORDER BY ' + type +
       '  ' + sort + ' limit ' + start + ',' + number;
     console.log(selectSQL);
 
-    var selectCount = 'select count(t.transferid) count from transfer t,organ o,box b,hospital h,transferperson tp,opo' +
+    var selectCount = 'select count(t.transferid) count from transfer t,organ o,box b,hospital h,transferPerson tp,opo' +
       ' op where t.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id ' +
       'and o.organid = t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id '+condition;
     console.log(selectCount);
