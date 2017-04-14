@@ -5,7 +5,7 @@ var settings={};
 settings.db={
   host: 'localhost',
   user: 'root',
-  password: '123456',
+  password: 'admin123',
   database:'transbox'
 }
 module.exports=settings;

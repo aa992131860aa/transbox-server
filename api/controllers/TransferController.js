@@ -462,7 +462,7 @@ module.exports = {
     settings.db = {
       host: 'localhost',
       user: 'root',
-      password: '123456',
+      password: 'admin123',
       database: 'transbox'
     }
     var connection = mysql.createConnection(settings.db);
@@ -789,7 +789,7 @@ module.exports = {
     settings.db = {
       host: 'localhost',
       user: 'root',
-      password: '123456',
+      password: 'admin123',
       database: 'transbox'
     }
 
