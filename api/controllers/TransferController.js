@@ -775,14 +775,14 @@ module.exports = {
   }
   ,
   getTransfersSql: function (req, res) {
-    var pathFile = path.resolve(__dirname, '../../config/settings.js');
+
 
 
     var start = req.query.start ? req.query.start : 0;
     var number = req.query.number ? req.query.number : 20;
     var hospitalid = req.query.hospitalid;
     console.log("hospitalid:"+hospitalid);
-    //console.log(req.query);
+    console.log(settings.db);
     //连接数据库
 
 
