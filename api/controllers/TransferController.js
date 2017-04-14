@@ -849,12 +849,12 @@ module.exports = {
       't.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
       '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id '+condition+' ORDER BY ' + type +
       '  ' + sort + ' limit ' + start + ',' + number;
-    //console.log(selectSQL);
+    console.log(selectSQL);
 
     var selectCount = 'select count(t.transferid) count from transfer t,organ o,box b,hospital h,transferperson tp,opo' +
       ' op where t.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id ' +
       'and o.organid = t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id '+condition;
-    //console.log(selectCount);
+    console.log(selectCount);
     connection.query(selectCount, function (err1, rows1) {
       if (err1) {
         throw err1;
