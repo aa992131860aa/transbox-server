@@ -460,7 +460,7 @@ module.exports = {
     //基础的温湿度
     //连接数据库
     settings.db = {
-      host: 'localhost',
+      host: '116.62.28.28',
       user: 'root',
        //modify
       password: 'admin123',
