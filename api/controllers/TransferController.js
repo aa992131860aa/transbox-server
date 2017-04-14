@@ -9,13 +9,10 @@ var BaseController = require('./BaseController');
 var Transaction = require('sails-mysql-transactions').Transaction;
 var EventProxy = require('eventproxy');
 
-// addSelf
-var express = require('express');
-var app = express();
 
 var mysql = require('mysql');
 //配置模块
-var settings = {};
+var settings = require('../../config/settings');
 
 //导出
 var officegen = require('officegen');
@@ -459,13 +456,13 @@ module.exports = {
     var arr = [];
     //基础的温湿度
     //连接数据库
-    settings.db = {
-      host: '116.62.28.28',
-      user: 'root',
-       //modify
-      password: 'admin123',
-      database: 'transbox'
-    }
+    // settings.db = {
+    //   host: '116.62.28.28',
+    //   user: 'root',
+    //    //modify
+    //   password: 'admin123',
+    //   database: 'transbox'
+    // }
     var connection = mysql.createConnection(settings.db);
     connection.connect();
     var info = "";
@@ -787,12 +784,7 @@ module.exports = {
     console.log("hospitalid:"+hospitalid);
     //console.log(req.query);
     //连接数据库
-    settings.db = {
-      host: '116.62.28.28',
-      user: 'root',
-      password: 'admin123',
-      database: 'transbox'
-    }
+
 
     var connection = mysql.createConnection(settings.db);
     connection.connect();
