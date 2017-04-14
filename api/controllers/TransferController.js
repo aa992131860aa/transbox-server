@@ -788,7 +788,7 @@ module.exports = {
     //console.log(req.query);
     //连接数据库
     settings.db = {
-      host: 'localhost',
+      host: '116.62.28.28',
       user: 'root',
       password: 'admin123',
       database: 'transbox'
