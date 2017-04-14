@@ -474,7 +474,7 @@ module.exports = {
          info = rows;
          arr.push(rows);
 
-         var sql2 = "Select transfer_id,DATE_FORMAT(recordAt,'%Y-%m-%d %H:%i:%s') recordAt,DATE_FORMAT(recordAt,'%m-%d %H:%i') recordAt1,longitude,latitude,temperature,humidity From transferrecord  where  transfer_id='"+transferId+"' and recordAt >'2016-05-05' order by recordAt asc";
+         var sql2 = "Select transfer_id,DATE_FORMAT(recordAt,'%Y-%m-%d %H:%i:%s') recordAt,DATE_FORMAT(recordAt,'%m-%d %H:%i') recordAt1,longitude,latitude,temperature,humidity From transferRecord  where  transfer_id='"+transferId+"' and recordAt >'2016-05-05' order by recordAt asc";
 
          console.log(sql2);
          console.log("=================================================================");
