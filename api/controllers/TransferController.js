@@ -788,6 +788,7 @@ module.exports = {
 
     var connection = mysql.createConnection(settings.db);
     connection.connect();
+    console.log("conn")
     var count = 20;
     var sort = 'ASC';
     var type = req.query.type;
