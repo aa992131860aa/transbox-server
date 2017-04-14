@@ -467,6 +467,7 @@ module.exports = {
     connection.connect();
     var info = "";
     var sql1 = "select count,duration,distance,currentCity,avgTemperature,power,expendPower,maxTemperature,minTemperature,maxHumidity,minHumidity,avgHumidity,DATE_FORMAT(minRecordAt,'%Y-%m-%d %H:%i:%s') minRecordAt from (select count(duration) count,duration,distance,currentCity,avgTemperature,power,expendPower from transferRecord where  transfer_id='"+transferId+"' order by recordAt DESC limit 0,1) as a,(select max(temperature) maxTemperature,min(temperature) minTemperature,max(humidity) maxHumidity,min(humidity)minHumidity,avg(humidity)avgHumidity,min(recordAt) minRecordAt from transferRecord where  transfer_id='"+transferId+"' ) as b;";
+    console.log(sql1);
      if(transferId){
        connection.query(sql1, function (err, rows) {
          if(err)throw err;
@@ -474,7 +475,7 @@ module.exports = {
          arr.push(rows);
 
          var sql2 = "Select transfer_id,DATE_FORMAT(recordAt,'%Y-%m-%d %H:%i:%s') recordAt,DATE_FORMAT(recordAt,'%m-%d %H:%i') recordAt1,longitude,latitude,temperature,humidity From transferrecord  where  transfer_id='"+transferId+"' and recordAt >'2016-05-05' order by recordAt asc";
-         //console.log(sql1);
+
          console.log(sql2);
          console.log("=================================================================");
          //温湿度集
