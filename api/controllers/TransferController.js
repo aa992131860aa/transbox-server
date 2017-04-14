@@ -462,6 +462,7 @@ module.exports = {
     settings.db = {
       host: 'localhost',
       user: 'root',
+       //modify
       password: 'admin123',
       database: 'transbox'
     }
