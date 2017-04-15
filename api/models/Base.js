@@ -36,6 +36,6 @@ module.exports = {
     return Math.floor(rnd);
   },
   config: {
-    host: 'http://127.0.0.1:1337'
+    host: 'http://116.62.28.28:1337'
   },
 };
