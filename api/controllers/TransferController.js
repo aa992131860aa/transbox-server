@@ -557,6 +557,18 @@ module.exports = {
     //
     //});
   },
+  getBoxNum:function(req,res){
+    var boxNum = req.query.boxNum;
+    var connection = mysql.createConnection(settings.db);
+    connection.connect();
+    var sql = "select type from organ GROUP BY type";
+    connection.query(sql, function (err, rows) {
+      if(err)throw err;
+
+      BaseController.sendOk('获取转运信息成功', rows, res);
+    });
+    connection.end();
+  },
   getInfo: function (req, res) {
     var transferNumber = req.query.transferNumber;
     var organSegNumber = req.query.organSegNumber;
@@ -835,7 +847,7 @@ module.exports = {
     //查询
     var selectSQL = 'select t.transferid t_transferid,t.transferNumber t_transferNumber,t.organCount t_organCount,' +
       't.boxPin t_boxPin, t.fromCity t_fromCity,t.toHospName t_toHospName,t.tracfficType t_tracfficType,t.deviceType' +
-      ' t_deviceType,t.getOrganAt t_getOrganAt,DATE_FORMAT(t.startAt,"%Y-%m-%d") t_startAt,DATE_FORMAT(t.endAt,"%Y-%m-%d") t_endAt,t.`status` t_status,t.createAt ' +
+      ' t_deviceType,DATE_FORMAT(t.getOrganAt,"%Y-%m-%d") t_getOrganAt,DATE_FORMAT(t.startAt,"%Y-%m-%d") t_startAt,DATE_FORMAT(t.endAt,"%Y-%m-%d") t_endAt,t.`status` t_status,t.createAt ' +
       't_createAt,t.modifyAt t_modifyAt,b.boxid b_boxid,b.deviceId b_deviceId,b.qrcode b_qrcode,b.model b_model,' +
       'b.transferStatus b_transferStatus,b.`status` b_status,b.createAt b_createAt,b.modifyAt b_modifyAt' +
       ',o.organid o_organid,o.segNumber o_segNumber,o.type o_type,o.bloodType o_bloodType,o.bloodSampleCount' +

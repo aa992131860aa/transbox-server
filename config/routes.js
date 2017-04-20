@@ -122,6 +122,8 @@ module.exports.routes = addGlobalPrefix({
   'get /transfer/:transferid': 'TransferController.getFirstByTransferid',
   'get /transferInfo': 'TransferController.getInfoSql',
   'get /transferInfo1': 'TransferController.getInfo',
+  //箱号
+  'get /boxNum:boxNum': 'TransferController.getBoxNum',
   'put /transfer/:transferid/done': 'TransferController.transferDone',
   'get /transfers': 'TransferController.getTransfers',
   'get /transfersOrganType': 'TransferController.getOrganTypes',
