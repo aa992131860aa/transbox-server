@@ -101,7 +101,7 @@ module.exports = {
 			dbStatus: 'N',
 			sort: 'recordAt'
 		}
-    console.log("record111:");
+    //console.log("record111:");
 
 		TransferRecord.find(findRecordParams).exec(function(err, records) {
 			if (err) {
@@ -138,14 +138,14 @@ module.exports = {
 			return;
 		}
 		values.push(transferid);
-		console.log('gg:'+values);
+		//console.log('gg:'+values);
 
 
 		var sql = 'select * from transferRecord where type & ? and transfer_id=? order by recordAt DESC';
 		var recordQueryAsync = Promise.promisify(TransferRecord.query);
 		recordQueryAsync(sql, values)
 			.then(function(records) {
-				console.log(records.length);
+				//console.log(records.length);
 				var results = [];
 				for (var i = 0; i < records.length; i++) {
 					results.push(records[i].recordAt);
@@ -155,5 +155,47 @@ module.exports = {
 			}, function(err) {
 				console.log(err);
 			});
-	}
+	},
+  getOpenCollision: function(req, res) {
+    var transferNumber = req.query.transferNumber;
+    //var organSegNumber = req.query.organSegNumber;
+    var type = req.query.type;
+
+    if (!transferNumber || !type ) {
+      BaseController.sendBadParams(res);
+      return;
+    }
+
+    var values = [];
+    if (type === 'open') {
+      values.push(8);
+
+    } else if (type === 'collision') {
+      values.push(4);
+
+    } else {
+      BaseController.sendBadParams(res);
+      return;
+    }
+    values.push(transferNumber);
+
+
+
+    var sql = 'select * from transferRecord where type & ? and transfer_id=(select transferid from transfer where transferNumber =? ) order by recordAt DESC';
+    var recordQueryAsync = Promise.promisify(TransferRecord.query);
+    console.log(sql+"\n"+values);
+    recordQueryAsync(sql, values)
+      .then(function(records) {
+       // console.log(records.length);
+        var results = [];
+        // for (var i = 0; i < records.length; i++) {
+        //   results.push(records[i].recordAt);
+        // }
+        //console.log(records);
+        BaseController.sendOk('获取监控数据成功', records, res);
+
+      }, function(err) {
+        console.log(err);
+      });
+  }
 };

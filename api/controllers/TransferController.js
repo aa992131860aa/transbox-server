@@ -440,15 +440,40 @@ module.exports = {
       BaseController.sendOk('获取转运信息成功', transferInfo, res);
     });
   },
+  getInfoBase:function(req,res){
+    var transferId = req.query.transferId;
+    var connection = mysql.createConnection(settings.db);
+    connection.connect();
+    var sql = 'select t.transferid t_transferid,t.transferNumber t_transferNumber,t.organCount t_organCount,' +
+    't.boxPin t_boxPin, t.fromCity t_fromCity,t.toHospName t_toHospName,t.tracfficType t_tracfficType,t.tracfficNumber t_tracfficNumber,t.deviceType' +
+    ' t_deviceType,DATE_FORMAT(t.getOrganAt,"%Y-%m-%d") t_getOrganAt,DATE_FORMAT(t.startAt,"%Y-%m-%d") t_startAt,DATE_FORMAT(t.endAt,"%Y-%m-%d") t_endAt,t.`status` t_status,t.createAt ' +
+    't_createAt,t.modifyAt t_modifyAt,b.boxid b_boxid,b.deviceId b_deviceId,b.qrcode b_qrcode,b.model b_model,' +
+    'b.transferStatus b_transferStatus,b.`status` b_status,b.createAt b_createAt,b.modifyAt b_modifyAt' +
+    ',o.organid o_organid,o.segNumber o_segNumber,o.type o_type,o.bloodType o_bloodType,o.bloodSampleCount' +
+    ' o_bloodSampleCount,o.organizationSampleType o_organizationSampleType,o.organizationSampleCount ' +
+    'o_organizationSampleCount,o.createAt o_createAt,o.modifyAt o_modifyAt,h.hospitalid h_hospitalid,h.`name`' +
+    ' h_name,h.district h_district,h.address h_address,h.grade h_grade,h.remark h_remark,h.`status` h_status,' +
+    'h.createAt h_createAt,h.modifyAt h_modifyAt,h.account_id h_account_id,tp.transferPersonid tp_transferPersonid,' +
+    'tp.`name` tp_name,tp.phone tp_phone,tp.organType tp_organType,tp.createAt tp_createAt,tp.modifyAt tp_modifyAt,' +
+    'op.opoid op_opoid,op.`name` op_name,op.district op_district,op.address op_address,op.grade op_grade,' +
+    'op.contactPerson op_contactPerson,op.contactPhone op_contactPhone,op.remark op_remark,op.createAt ' +
+    'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferPerson tp,opo op where ' +
+    't.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
+    '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id and t.transferid ="'+transferId+'"';
+    console.log(sql);
+    connection.query(sql, function (err, rows) {
+      if(err)throw err;
+
+      BaseController.sendOk('获取转运信息成功', rows, res);
+    });
+    connection.end();
+  }
+  ,
   getInfoSql: function (req, res) {
-    var transferNumber = req.query.transferNumber;
-    var organSegNumber = req.query.organSegNumber;
+
     var transferId = req.query.transferId;
 
-    if (!transferNumber || !organSegNumber) {
-      BaseController.sendBadParams(res);
-      return;
-    }
+
     //获取展示的条数
     var lineSize = 30;
     //总的数量
@@ -467,7 +492,7 @@ module.exports = {
     connection.connect();
     var info = "";
     var sql1 = "select count,duration,distance,currentCity,avgTemperature,power,expendPower,maxTemperature,minTemperature,maxHumidity,minHumidity,avgHumidity,DATE_FORMAT(minRecordAt,'%Y-%m-%d %H:%i:%s') minRecordAt from (select count(duration) count,duration,distance,currentCity,avgTemperature,power,expendPower from transferRecord where  transfer_id='"+transferId+"' order by recordAt DESC limit 0,1) as a,(select max(temperature) maxTemperature,min(temperature) minTemperature,max(humidity) maxHumidity,min(humidity)minHumidity,avg(humidity)avgHumidity,min(recordAt) minRecordAt from transferRecord where  transfer_id='"+transferId+"' ) as b;";
-    console.log(sql1);
+    //console.log(sql1);
      if(transferId){
        connection.query(sql1, function (err, rows) {
          if(err)throw err;
@@ -476,8 +501,8 @@ module.exports = {
 
          var sql2 = "Select transfer_id,DATE_FORMAT(recordAt,'%Y-%m-%d %H:%i:%s') recordAt,DATE_FORMAT(recordAt,'%m-%d %H:%i') recordAt1,longitude,latitude,temperature,humidity From transferRecord  where  transfer_id='"+transferId+"' and recordAt >'2016-05-05' order by recordAt asc";
 
-         console.log(sql2);
-         console.log("=================================================================");
+         //console.log(sql2);
+         //console.log("=================================================================");
          //温湿度集
          connection.query(sql2, function (err, rows) {
            if(err)throw err;
@@ -559,9 +584,14 @@ module.exports = {
   },
   getBoxNum:function(req,res){
     var boxNum = req.query.boxNum;
+
+    var page = req.query.page;
+    var pageSize = req.query.pageSize;
     var connection = mysql.createConnection(settings.db);
     connection.connect();
-    var sql = "select type from organ GROUP BY type";
+    var sql = "select transferid,transferNumber,fromCity,toHospName,DATE_FORMAT(t.createAt,'%Y-%m-%d %H:%i:%s') createAt,o.segNumber segNumber from transfer t,organ o where o.organid=t.organ_id and box_id = (select boxid  from box where deviceId = '"+boxNum+"') order by createAt DESC limit "+page*pageSize+","+pageSize+";";
+    console.log(sql);
+
     connection.query(sql, function (err, rows) {
       if(err)throw err;
 
@@ -623,7 +653,7 @@ module.exports = {
 
         var transferInfo = Transfer.detailInfo(record);
         BaseController.sendOk('获取转运信息成功', transferInfo, res);
-        console.log(transferInfo);
+        //console.log(transferInfo);
 
         callback(null, 'transfer');
       });
@@ -794,8 +824,8 @@ module.exports = {
     var start = req.query.start ? req.query.start : 0;
     var number = req.query.number ? req.query.number : 20;
     var hospitalid = req.query.hospitalid;
-    console.log("hospitalid:"+hospitalid);
-    console.log(settings.db);
+    //console.log("hospitalid:"+hospitalid);
+    //console.log(settings.db);
     //连接数据库
 
 
@@ -862,12 +892,12 @@ module.exports = {
       't.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
       '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id '+condition+' ORDER BY ' + type +
       '  ' + sort + ' limit ' + start + ',' + number;
-    console.log(selectSQL);
+    //console.log(selectSQL);
 
     var selectCount = 'select count(t.transferid) count from transfer t,organ o,box b,hospital h,transferPerson tp,opo' +
       ' op where t.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id ' +
       'and o.organid = t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id '+condition;
-    console.log(selectCount);
+    //console.log(selectCount);
     connection.query(selectCount, function (err1, rows1) {
       if (err1) {
         throw err1;
@@ -1048,7 +1078,7 @@ module.exports = {
             'like': '%' + req.query.toHospitalName + '%'
           }
         }
-        console.log('hospitals:' + req.query.toHospitalName);
+        //console.log('hospitals:' + req.query.toHospitalName);
         Hospital.find(findHospParams).exec(function (err, records) {
           if (err) {
             return callback(err);
@@ -1090,7 +1120,7 @@ module.exports = {
             'like': '%' + req.query.organType + '%'
           };
         }
-        console.log('organs:' + req.query.organSegNumber + "," + req.query.organType);
+        //console.log('organs:' + req.query.organSegNumber + "," + req.query.organType);
         Organ.find(findOrganParams).exec(function (err, records) {
           if (err) {
             return callback(err);
@@ -1116,7 +1146,7 @@ module.exports = {
           dbStatus: 'N',
           name: req.query.transferPersonName
         }
-        console.log('persons:' + req.query.transferPersonName);
+        //console.log('persons:' + req.query.transferPersonName);
         TransferPerson.find(findPersonParams).exec(function (err, records) {
           if (err) {
             return callback(err);
