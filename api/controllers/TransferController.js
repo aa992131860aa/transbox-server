@@ -37,7 +37,7 @@ module.exports = {
     var person = req.body.person;
     var organ = req.body.organ;
     var opo = req.body.opo;
-
+    console.log(req.body);
     //object from db
     var boxInfoDb = {};
     var organInfoDb = {};
@@ -62,6 +62,7 @@ module.exports = {
         dbStatus: 'N',
         transferStatus: 'free'
       }
+      console.log(req.body);
       Box.transact(transaction).findOne(findBoxParams).populate('hosp_id').exec(function (err, record) {
         console.log('step1');
         if (err) {
@@ -69,13 +70,16 @@ module.exports = {
           BaseController.sendDbError(err, res);
           return;
         }
-
+        console.log(1);
+        console.log(err);
+        console.log(2);
         if (!record) {
           transaction.rollback();
+
           BaseController.sendNotFound('创建转运失败，该箱子目前不能使用或已经被删除', res);
           return;
         }
-
+        console.log(3);
         // the box is free
         record.hospital = Hospital.info(record.hosp_id);
         var boxInfo = Box.info(record);
@@ -144,7 +148,8 @@ module.exports = {
             });
           }
 
-        } else {
+        }
+        else {
           //create a organ record
           var createOrganParams = {
             segNumber: organ.segNumber,
@@ -182,9 +187,11 @@ module.exports = {
             transferPersonid: person.transferPersonid,
             dbStatus: 'N'
           }
+          console.log(findPersonParams);
           TransferPerson.transact(transaction).findOne(findPersonParams).exec(function (err, record) {
             if (err) {
               transaction.rollback();
+              console.log("organ error:"+err);
               BaseController.sendDbError(err, res);
               return;
             }
@@ -192,6 +199,7 @@ module.exports = {
             if (!record) {
               transaction.rollback();
               BaseController.sendDbError('无法获取该转运人信息', res);
+              console.log("organ error1:"+res);
               return;
             }
 
@@ -199,7 +207,8 @@ module.exports = {
             ep.emit('person', personInfo);
           });
 
-        } else {
+        }
+        else {
           //create a new transfer person
           var createPersonParams = {
             name: person.name,
@@ -207,16 +216,19 @@ module.exports = {
             organType: organInfo.type,
             hosp_id: boxInfoDb.hospital.hospitalid
           }
+          console.log(createPersonParams);
 
           TransferPerson.transact(transaction).create(createPersonParams).exec(function (err, record) {
             if (err) {
               transaction.rollback();
+              console.log("organ error2:"+err);
               BaseController.sendDbError(err, res);
               return;
             }
 
             if (!record) {
               transaction.rollback();
+              console.log("organ error3:"+res);
               BaseController.sendDbError('无法创建转运人信息', res);
               return;
             }
@@ -288,7 +300,8 @@ module.exports = {
             });
           }
 
-        } else {
+        }
+        else {
           //create a new opo
           var updateOpo = Opo.getUpdateParams(opo);
           if (Object.keys(updateOpo).length > 0) {
@@ -366,16 +379,18 @@ module.exports = {
 
         //opo info
         createParams.opo_id = opoInfo.opoid;
-
+        console.log(createParams);
         Transfer.transact(transaction).create(createParams).exec(function (err, record) {
           if (err) {
             transaction.rollback();
             BaseController.sendDbError(err, res);
+            console.log("transfer6:"+err);
             return;
           }
 
           if (!record) {
             transaction.rollback();
+            console.log("transfer6r:"+record);
             BaseController.sendDbError('创建转运失败', res);
 
           } else {
@@ -386,12 +401,14 @@ module.exports = {
             Transfer.transact(transaction).findOne(findParams).populate('box_id').populate('opo_id').populate('organ_id').populate('transferPerson_id').populate('to_hosp_id').exec(function (err, record) {
               if (err) {
                 transaction.rollback();
+                console.log("transfer61:"+err);
                 BaseController.sendDbError(err, res);
                 return;
               }
 
               if (!record) {
                 transaction.rollback();
+                console.log("transfer6r1:"+record);
                 BaseController.sendDbError('创建转运失败', res);
                 return;
               }
@@ -413,6 +430,400 @@ module.exports = {
               // }
               // MSMService.sendMsg(transferInfo.transferPersonInfo.phone, params);
             });
+          }
+        });
+      });
+    });
+  },
+  modifyTransfer: function (req, res) {
+    console.log('create a new transfer.' + (new Date()));
+    if (!Transfer.isCreateParamsOk(req.body)) {
+      BaseController.sendBadParams(res);
+      return;
+    }
+
+
+
+    //request params
+    var baseInfo = req.body.baseInfo;
+    var to = req.body.to;
+    var person = req.body.person;
+    var organ = req.body.organ;
+    var opo = req.body.opo;
+    var transferid = req.body.transferId;
+    console.log(req.body);
+    //object from db
+    var boxInfoDb = {};
+    var organInfoDb = {};
+    var personInfoDb = {};
+    var opoInfoDb = {};
+
+    Transaction.start(function (err, transaction) {
+      console.log('start transation');
+      if (err) {
+        // the first error might even fail to return a transaction object, so double-check.
+        transaction && transaction.rollback();
+        BaseController.sendDbError(err, res);
+        return;
+      }
+
+      var createParams = {};
+      var ep = new EventProxy();
+
+      /* =============== step1: get box info =============== */
+      var findBoxParams = {
+        boxid: baseInfo.box_id,
+        dbStatus: 'N',
+        transferStatus: 'transfering'
+      }
+      console.log(req.body);
+      Box.transact(transaction).findOne(findBoxParams).populate('hosp_id').exec(function (err, record) {
+        console.log('step1');
+        if (err) {
+          transaction.rollback();
+          BaseController.sendDbError(err, res);
+          return;
+        }
+
+        if (!record) {
+          transaction.rollback();
+
+          BaseController.sendNotFound('创建转运失败，该箱子目前不能使用或已经被删除', res);
+          return;
+        }
+        console.log(3);
+        // the box is free
+        record.hospital = Hospital.info(record.hosp_id);
+        var boxInfo = Box.info(record);
+        boxInfoDb = boxInfo;
+        ep.emit('box', boxInfo);
+        //return ;
+      });
+
+
+      /* =============== step2: get organ info =============== */
+      ep.once('box', function (boxInfo) {
+        console.log('step2');
+        if (organ.dataType === 'db') {
+          var findOrgan = {
+            organid: organ.organid,
+            dbStatus: 'N'
+          }
+          var updateOrgan = Organ.getUpdateParams(organ);
+          if (Object.keys(updateOrgan).length > 0) {
+            Organ.transact(transaction).update(findOrgan, updateOrgan).exec(function (err, records) {
+              if (err) {
+                transaction.rollback();
+                BaseController.sendDbError(err, res);
+                return;
+              }
+
+              if (records.length > 0) {
+                Organ.transact(transaction).findOne(findOrgan).exec(function (err, record) {
+                  if (err) {
+                    transaction.rollback();
+                    BaseController.sendDbError(err, res);
+                    return;
+                  }
+
+                  if (!record) {
+                    transaction.rollback();
+                    BaseController.sendDbError('无法获取器官信息', res);
+                    return;
+                  }
+
+                  var organInfo = Organ.info(record);
+                  ep.emit('organ', organInfo);
+                });
+
+              } else {
+                transaction.rollback();
+                BaseController.sendDbError('修改器官信息失败', res);
+              }
+            });
+
+          } else {
+            Organ.transact(transaction).findOne(findOrgan).exec(function (err, record) {
+              if (err) {
+                transaction.rollback();
+                BaseController.sendDbError(err, res);
+                return;
+              }
+
+              if (!record) {
+                transaction.rollback();
+                BaseController.sendDbError('无法获取器官信息', res);
+                return;
+              }
+
+              var organInfo = Organ.info(record);
+              ep.emit('organ', organInfo);
+            });
+          }
+
+        }
+        else {
+          //create a organ record
+          var createOrganParams = {
+            segNumber: organ.segNumber,
+            type: organ.type,
+            bloodType: organ.bloodType,
+            bloodSampleCount: organ.bloodSampleCount,
+            organizationSampleType: organ.organizationSampleType,
+            organizationSampleCount: organ.organizationSampleCount
+          }
+
+          Organ.transact(transaction).create(createOrganParams).exec(function (err, record) {
+            if (err) {
+              transaction.rollback();
+              BaseController.sendDbError(err, res);
+              return;
+            }
+
+            if (!record) {
+              transaction.rollback();
+              BaseController.sendDbError('无法新建器官信息', res);
+              return;
+            }
+
+            var organInfo = Organ.info(record);
+            ep.emit('organ', organInfo);
+          });
+        }
+      });
+
+      /* =============== step3: get transfer person info =============== */
+      ep.once('organ', function (organInfo) {
+        console.log('step3');
+        if (person.transferPersonid) {
+          var findPersonParams = {
+            transferPersonid: person.transferPersonid,
+            dbStatus: 'N'
+          }
+          console.log(findPersonParams);
+          TransferPerson.transact(transaction).findOne(findPersonParams).exec(function (err, record) {
+            if (err) {
+              transaction.rollback();
+              console.log("organ error:"+err);
+              BaseController.sendDbError(err, res);
+              return;
+            }
+
+            if (!record) {
+              transaction.rollback();
+              BaseController.sendDbError('无法获取该转运人信息', res);
+              console.log("organ error1:"+res);
+              return;
+            }
+
+            var personInfo = TransferPerson.info(record);
+            ep.emit('person', personInfo);
+          });
+
+        }
+        else {
+          //create a new transfer person
+          var createPersonParams = {
+            name: person.name,
+            phone: person.phone,
+            organType: organInfo.type,
+            hosp_id: boxInfoDb.hospital.hospitalid
+          }
+          //console.log(createPersonParams);
+             console.log("create person")
+          TransferPerson.transact(transaction).create(createPersonParams).exec(function (err, record) {
+            if (err) {
+              transaction.rollback();
+              console.log("organ error2:"+err);
+              BaseController.sendDbError(err, res);
+              return;
+            }
+
+            if (!record) {
+              transaction.rollback();
+              console.log("organ error3:"+res);
+              BaseController.sendDbError('无法创建转运人信息', res);
+              return;
+            }
+
+            var personInfo = TransferPerson.info(record);
+            ep.emit('person', personInfo);
+          });
+        }
+      });
+
+      /* =============== step4: get opo info =============== */
+      ep.once('person', function (personInfo) {
+        console.log('step4');
+        console.log(opo.opoid);
+        if (opo.opoid) {
+          var findOpo = {
+            opoid: opo.opoid,
+            dbStatus: 'N'
+          }
+
+          var updateOpo = Opo.getUpdateParams(opo);
+          if (Object.keys(updateOpo).length > 0) {
+            Opo.transact(transaction).update(findOpo, updateOpo).exec(function (err, records) {
+              if (err) {
+                transaction.rollback();
+                BaseController.sendDbError(err, res);
+                console.log("opoerr1:"+err)
+                return;
+              }
+
+              if (records.length > 0) {
+                Opo.transact(transaction).findOne(findOpo).exec(function (err, record) {
+                  if (err) {
+                    transaction.rollback();
+                    BaseController.sendDbError(err, res);
+                    return;
+                  }
+
+                  if (!record) {
+                    transaction.rollback();
+                    BaseController.sendDbError('无法获取opo信息', res);
+                    return;
+                  }
+
+                  var opoInfo = Opo.info(record);
+                  ep.emit('opo', opoInfo);
+                });
+
+              } else {
+                transaction.rollback();
+                BaseController.sendDbError('无法获取opo信息', res);
+              }
+            });
+
+          } else {
+            Opo.transact(transaction).findOne(findOpo).exec(function (err, record) {
+              if (err) {
+                transaction.rollback();
+                BaseController.sendDbError(err, res);
+                return;
+              }
+
+              if (!record) {
+                transaction.rollback();
+                BaseController.sendDbError('无法获取opo信息', res);
+                return;
+              }
+
+              var opoInfo = Opo.info(record);
+              ep.emit('opo', opoInfo);
+            });
+          }
+
+        }
+        else {
+          //create a new opo
+          var updateOpo = Opo.getUpdateParams(opo);
+          if (Object.keys(updateOpo).length > 0) {
+            Opo.transact(transaction).create(updateOpo).exec(function (err, record) {
+              console.log("opo create");
+              if (err) {
+                transaction.rollback();
+                BaseController.sendDbError(err, res);
+                return;
+              }
+
+              if (!record) {
+                transaction.rollback();
+                BaseController.sendDbError('无法获取opo信息', res);
+                return;
+              }
+
+              var opoInfo = Opo.info(record);
+              ep.emit('opo', opoInfo);
+            });
+
+          } else {
+            transaction.rollback();
+            BaseController.sendDbError('opo参数有误', res);
+          }
+        }
+      });
+
+      /* =============== step5: update box status =============== */
+      ep.once('opo', function (opoInfo) {
+        console.log('step5');
+        var findBox = {
+          boxid: boxInfoDb.boxid,
+          dbStatus: 'N'
+        }
+        var updateBox = {
+          transferStatus: 'transfering'
+        }
+        Box.transact(transaction).update(findBox, updateBox).exec(function (err, records) {
+          if (err) {
+            transaction.rollback();
+            BaseController.sendDbError(err, res);
+            return;
+          }
+
+          if (records.length > 0) {
+            var boxInfo2 = Box.info(records[0]);
+            ep.emit('boxUpdated', boxInfo2);
+
+          } else {
+            transaction.rollback();
+            BaseController.sendDbError('更新箱子状态失败', res);
+          }
+        });
+      });
+
+      /* =============== step6: create a new transfer =============== */
+      ep.all('box', 'organ', 'person','opo', 'boxUpdated', function (boxInfo, organInfo, personInfo, opoInfo, boxInfo2) {
+        console.log('step6');
+        //base info
+        for (var key in baseInfo) {
+          createParams[key] = baseInfo[key];
+        }
+
+        //to info
+        createParams.to_hosp_id = boxInfo.hospital.hospitalid;
+        if (to.dataType === 'new') {
+          createParams.toHospName = to.toHospName;
+        }
+
+        //person info
+        createParams.transferPerson_id = personInfo.transferPersonid;
+
+        //organ info
+        createParams.organ_id = organInfo.organid;
+
+        //opo info
+        createParams.opo_id = opoInfo.opoid;
+        //var createParams1 = Transfer.detailInfo(opo);
+        var findTransfer = {
+          transferid:transferid
+        }
+        console.log('transferid');
+        console.log(transferid);
+        Transfer.transact(transaction).update(findTransfer, createParams).exec(function (err, record) {
+          if (err) {
+            transaction.rollback();
+            BaseController.sendDbError(err, res);
+            console.log("transfer6:"+err);
+            return;
+          }
+
+          if (!record) {
+            transaction.rollback();
+            console.log("transfer6r:"+record);
+            BaseController.sendDbError('创建转运失败', res);
+
+          } else {
+
+            transaction.commit();
+
+            BaseController.sendOk('新建转运成功', 'ok', res);
+
+
+
+
+
           }
         });
       });
@@ -480,14 +891,7 @@ module.exports = {
     var count = 1;
     var arr = [];
     //基础的温湿度
-    //连接数据库
-    // settings.db = {
-    //   host: '116.62.28.28:1337',
-    //   user: 'root',
-    //    //modify
-    //   password: 'admin123',
-    //   database: 'transbox'
-    // }
+
     var connection = mysql.createConnection(settings.db);
     connection.connect();
     var info = "";
@@ -519,68 +923,7 @@ module.exports = {
      }
 
 
-    //connection.end();
 
-    //温湿度集
-    //var connection = mysql.createConnection(settings.db);
-    //connection.connect();
-
-
-
-    // async.series([
-    // //   function (callback) {
-    // //   console.log('step1');
-    // //   //get organ info by organ segment number
-    // //   var findOrgan = {
-    // //     segNumber: organSegNumber,
-    // //     dbStatus: 'N'
-    // //   }
-    // //   Organ.findOne(findOrgan).exec(function (err, record) {
-    // //     if (err) {
-    // //       BaseController.sendDbError(err, res);
-    // //       return;
-    // //     }
-    // //
-    // //     if (!record) {
-    // //       BaseController.sendNotFound('器官段号有误', res);
-    // //       return;
-    // //     }
-    // //
-    // //     callback(null, 'organ');
-    // //   });
-    // //
-    // // },
-    //   function (callback) {
-    //   console.log('step2');
-    //   //get transfer info by transfer number
-    //   var findParams = {
-    //     transferNumber: transferNumber,
-    //     dbStatus: 'N'
-    //   }
-    //
-    //   Transfer.findOne(findParams).populate('box_id').populate('opo_id').populate('organ_id').populate('transferPerson_id').populate('to_hosp_id').populate('records', {
-    //     sort: 'recordAt'
-    //   }).exec(function (err, record) {
-    //     if (err) {
-    //       BaseController.sendDbError(err, res);
-    //       return;
-    //     }
-    //
-    //     if (!record) {
-    //       BaseController.sendNotFound('找不到该转运信息', res);
-    //       return;
-    //     }
-    //
-    //
-    //     var transferInfo = Transfer.detailInfo(record);
-    //     BaseController.sendOk('获取转运信息成功', transferInfo, res);
-    //     //console.log(record);
-    //     callback(null, 'transfer');
-    //   });
-    //
-    // }], function (err, results) {
-    //
-    //});
   },
   getBoxNum:function(req,res){
     var boxNum = req.query.boxNum;
@@ -689,6 +1032,7 @@ module.exports = {
         if (err) {
           transaction.rollback();
           BaseController.sendDbError(err, res);
+          console.log(err);
           return;
         }
 
@@ -711,7 +1055,7 @@ module.exports = {
           },
           dbStatus: 'N'
         }
-
+         console.log(findBox);
         var updateBox = {
           transferStatus: 'free'
         }
@@ -720,6 +1064,7 @@ module.exports = {
           if (err) {
             transaction.rollback();
             BaseController.sendDbError(err, res);
+            console.log(err);
             return;
           }
 
@@ -750,7 +1095,7 @@ module.exports = {
           if (records.length > 0) {
 
             var transferInfo = Transfer.info(records[0]);
-
+            console.log(transferInfo);
             var findParams = {
               dbStatus: 'N',
               transferid: transferInfo.transferid

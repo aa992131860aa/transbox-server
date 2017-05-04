@@ -45,7 +45,7 @@ module.exports.sockets = {
   //
 
   // adapter: 'socket.io-redis',
-  // host: '127.0.0.1',
+  // host: '116.62.28.28',
   // port: 6379,
   // db: 0,
   // pass: '',
@@ -109,7 +109,7 @@ module.exports.sockets = {
   beforeConnect: function(handshake, cb) {
     // `true` allows the connection
     return cb(null, true);
-  
+
     // (`false` would reject the connection)
   },
 

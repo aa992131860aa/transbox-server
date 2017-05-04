@@ -81,7 +81,7 @@ module.exports = {
 
 		// 				var findBox = {
 		// 					boxid: box.boxid
-		// 				} 
+		// 				}
 		// 				var updateBox = {
 		// 					qrcode: 'http://192.168.0.112:8088/transbox-server/public/qr_imgs/' + imgName
 		// 				}
@@ -103,7 +103,7 @@ module.exports = {
 		// 						BaseController.sendOk('新建箱子成功', box, res);
 		// 					}
 		// 				});
-		// 			});	
+		// 			});
 		// 		});
 
 		// 	} else {
@@ -295,15 +295,27 @@ module.exports = {
 	},
 	getBoxInfo: function(req, res) {
 		var deviceId = req.query.deviceId;
-		if (!deviceId) {
+		var boxid = req.query.boxid;
+		console.log(deviceId);
+		console.log("d:"+deviceId)
+		if (!deviceId&&!boxid) {
 			BaseController.sendBadParams(res);
 			return;
 		}
+    console.log(111)
+    if(boxid){
+      var findBoxParams = {
+        boxid: boxid,
+        dbStatus: 'N'
+      }
+    }else{
+      var findBoxParams = {
+        deviceId: deviceId,
+        dbStatus: 'N'
+      }
+    }
 
-		var findBoxParams = {
-			deviceId: deviceId,
-			dbStatus: 'N'
-		}
+
 
 		Box.findOne(findBoxParams).populate('hosp_id').exec(function(err, record) {
 			if (err) {

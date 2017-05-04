@@ -124,10 +124,19 @@ module.exports = {
 		var transInfo = Base.removeNull(info);
 		delete transInfo['dbStatus'];
 		transInfo.boxInfo = Box.info(transInfo.box_id);
-		transInfo.organInfo = Organ.info(transInfo.organ_id);
-		transInfo.toHospitalInfo = Hospital.info(transInfo.to_hosp_id);
-		transInfo.transferPersonInfo = TransferPerson.info(transInfo.transferPerson_id);
-		transInfo.opoInfo = Opo.info(transInfo.opo_id);
+		if(transInfo.organ_id){
+      transInfo.organInfo = Organ.info(transInfo.organ_id);
+    }
+	  if(transInfo.to_hosp_id){
+      transInfo.toHospitalInfo = Hospital.info(transInfo.to_hosp_id);
+    }
+		if(transInfo.transferPerson_id){
+      transInfo.transferPersonInfo = TransferPerson.info(transInfo.transferPerson_id);
+    }
+    if(transInfo.opo_id){
+      transInfo.opoInfo = Opo.info(transInfo.opo_id);
+    }
+
 
 		delete transInfo['box_id'];
 		delete transInfo['organ_id'];
@@ -135,11 +144,11 @@ module.exports = {
 		delete transInfo['transferPerson_id'];
 		delete transInfo['opo_id'];
 		delete transInfo['transactionId'];
-		
+
 		for (var i = 0; i < transInfo.records.length; i++) {
 			transInfo.records[i] = TransferRecord.info(transInfo.records[i]);
 		}
-		
+
 		return transInfo;
 	},
 	isCreateParamsOk: function(params) {

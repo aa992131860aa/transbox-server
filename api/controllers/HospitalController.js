@@ -10,7 +10,8 @@ var Transaction = require('sails-mysql-transactions').Transaction;
 var Promise = require('bluebird');
 var EventProxy = require('eventproxy');
 var _ = require('lodash');
-
+//配置模块
+var settings = require('../../config/settings');
 module.exports = {
 	create: function(req, res) {
 		Transaction.start(function(err, transaction) {
@@ -471,31 +472,58 @@ module.exports = {
 			}
 		});
 	},
-	login: function(req, res) {
-		var username = req.body.username;
-		var pwd = req.body.pwd;
-		var findParams = {
-			username: username,
-			pwd: pwd,
-			dbStatus: 'N'
-		}
+  loginAccount: function(req, res) {
+    var accountId = req.body.accountId;
+    var pwd = req.body.pwd;
+    console.log("11");
+    console.log(req.body);
+    var findParams = {
+      accountid: accountId,
+      pwd: pwd,
+      dbStatus: 'N'
+    }
 
-		Hospital.find(findParams).exec(function(err, records) {
-			if (err) {
-				BaseController.sendDbError(err, res);
-				return;
-			}
+    Hospital.find(findParams).exec(function(err, records) {
+      if (err) {
+        BaseController.sendDbError(err, res);
+        return;
+      }
 
-			if (records.length > 0) {
-				var hosp = records[0];
-				hosp = Hospital.info(hosp);
-				BaseController.sendOk('登陆成功', hosp, res);
+      if (records.length > 0) {
+        var hosp = records[0];
+        hosp = Hospital.info(hosp);
+        BaseController.sendOk('登陆成功', hosp, res);
 
-			} else {
-				BaseController.sendNotFound('找不到该医院，可能已经被删除', res);
-			}
-		});
+      } else {
+        BaseController.sendNotFound('找不到该医院，可能已经被删除', res);
+      }
+    });
 	},
+  login: function(req, res) {
+    var username = req.body.username;
+    var pwd = req.body.pwd;
+    var findParams = {
+      username: username,
+      pwd: pwd,
+      dbStatus: 'N'
+    }
+
+    Hospital.find(findParams).exec(function(err, records) {
+      if (err) {
+        BaseController.sendDbError(err, res);
+        return;
+      }
+
+      if (records.length > 0) {
+        var hosp = records[0];
+        hosp = Hospital.info(hosp);
+        BaseController.sendOk('登陆成功', hosp, res);
+
+      } else {
+        BaseController.sendNotFound('找不到该医院，可能已经被删除', res);
+      }
+    });
+  },
 	deleteHospital: function(req, res) {
 		var hospitalid = req.params.hospitalid;
 		var findParams = {
