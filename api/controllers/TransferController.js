@@ -869,7 +869,7 @@ module.exports = {
     'op.opoid op_opoid,op.`name` op_name,op.district op_district,op.address op_address,op.grade op_grade,' +
     'op.contactPerson op_contactPerson,op.contactPhone op_contactPhone,op.remark op_remark,op.createAt ' +
     'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferPerson tp,opo op where ' +
-    't.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
+    't.dbStatus = "N"  and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
     '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id and t.transferid ="'+transferId+'"';
     console.log(sql);
     connection.query(sql, function (err, rows) {
