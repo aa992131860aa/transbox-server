@@ -73,6 +73,19 @@ module.exports.routes = addGlobalPrefix({
   * for configuration options and examples.                                  *
   *                                                                          *
   ***************************************************************************/
+  'get /uploadAPK': 'OtherController.uploadAPK',
+  //push
+  'get /pushMessage': 'PushController.pushMessage',
+  'get /getUnreadPushNum':'PushController.getUnreadPushNum',
+  'get /clearUnreadPushMessageNum':'PushController.clearUnreadPushMessageNum',
+  'get /getPushList':'PushController.getPushList',
+
+
+  //rong
+  'get /rongCreate': 'RongController.create',
+  'get /checkOnline': 'RongController.checkOnline',
+  'get /sendSystemMessage': 'RongController.sendSystemMessage',
+  'get /sendGroupMessage': 'RongController.sendGroupMessage',
 
   //hospital routes
   'post /hospital': 'HospitalController.create',
@@ -132,6 +145,10 @@ module.exports.routes = addGlobalPrefix({
   'get /transfersOrganType': 'TransferController.getOrganTypes',
   'get /hospitalName': 'TransferController.getHospitalName',
   'get /transfersSql': 'TransferController.getTransfersSql',
+  'get /getTransfersSqlAndroid': 'TransferController.getTransfersSqlAndroid',
+
+  //app获取转运和正在转运信息
+  'get /getTransfersStatus': 'TransferController.getTransfersStatus',
   'get /export/:transferid': 'TransferController.getExportFile',
 
   //transfer record routes

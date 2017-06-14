@@ -3,7 +3,7 @@
  */
 var settings={};
 settings.db={
-  host: 'localhost',
+  host: '116.62.28.28',
   user: 'root',
   password: 'admin123',
   database:'transbox'

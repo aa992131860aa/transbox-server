@@ -55,13 +55,16 @@ module.exports = {
 	},
 	info: function(account) {
 		var a = Base.removeNull(account);
-		delete a['dbStatus'];
-		delete a['pwd'];
-		if (a.type === 'hospital' && a.hospitals.length) {
-			a.hospitalInfo = Hospital.info(a.hospitals[0]);
-			delete a['hospitals']; //fix
-		}
+		if(a){
+      delete a['dbStatus'];
+      delete a['pwd'];
+      if (a.type === 'hospital' && a.hospitals.length) {
+        a.hospitalInfo = Hospital.info(a.hospitals[0]);
+        delete a['hospitals']; //fix
+      }
 
-		return a;
+      return a;
+    }
+
 	}
 };

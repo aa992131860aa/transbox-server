@@ -268,17 +268,21 @@ module.exports = {
 			var updateAccountParams = {
 				username: hospitalInfo.username
 			}
-
+       console.log(findAccountParams);
+      console.log(findAccountParams);
 			Account.transact(transaction).update(findAccountParams, updateAccountParams).exec(function(err, records) {
+
 				if (err) {
 					transaction.rollback();
 					BaseController.sendDbError('无法修改账号信息', res);
+
 					return;
 				}
 
 				if (!records || records.length === 0) {
 					transaction.rollback();
 					BaseController.sendDbError('无法修改账号信息', res);
+          console.log(1);
 					return;
 				}
 
@@ -286,9 +290,11 @@ module.exports = {
 				ep.emit('account', accountInfo);
 			});
 
+
 			//update transfer persons
 			ep.once('account', function(accountInfo) {
 				async.mapSeries(persons, function(person, callback) {
+
 					if (person.transferPersonid) {
 						//update person info
 						var findPersonParams = {
@@ -304,12 +310,14 @@ module.exports = {
 							if (err) {
 								transaction.rollback();
 								callback(err);
+
 								return;
 							}
 
 							if (!records || records.length === 0) {
 								transaction.rollback();
 								callback('更新转运人信息失败');
+
 								return;
 							}
 							var personInfo = TransferPerson.info(records[0]);
@@ -317,6 +325,7 @@ module.exports = {
 						});
 
 					} else {
+            console.log('create a new person')
 						//create a new person
 						var createPersonParams = {
 							organType: person.organType,
@@ -358,6 +367,7 @@ module.exports = {
 
 			//update hospital info
 			ep.once('person', function(persons) {
+        console.log(2);
 				var findHospParams = {
 					hospitalid: hospitalid,
 					dbStatus: 'N'
@@ -385,6 +395,7 @@ module.exports = {
 			});
 
 			ep.once('hospital', function(hospital) {
+        console.log(3);
 				//add box to hospital
 				if (hospitalInfo.boxes && hospitalInfo.boxes.length > 0) {
 					var findBoxParams = {

@@ -17,6 +17,7 @@ module.exports = {
 			case 'done':
 				content = '【器官转运】本次转运已结束。转运单号：' + params.transferNumber + '，器官段号：' + params.segNumber + '。查看详细内容请前往' + params.url;
 				break;
+
 		}
 
 		var msg = {

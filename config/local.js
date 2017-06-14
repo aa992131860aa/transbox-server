@@ -85,7 +85,7 @@ module.exports = {
    connections: {
     mySQLT: {
       adapter: 'sails-mysql-transactions',
-      host: 'localhost',
+      host: '116.62.28.28',
       //user: 'root',
       //password: 'admin123',
       // user: 'blackmatch',
