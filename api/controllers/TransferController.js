@@ -1736,19 +1736,21 @@ module.exports = {
 
     async.series([function (callback) {
       //find hospitals
-      if (req.query.toHospitalName) {
+      if (req.query.toHospitalName!='0') {
         var findHospParams = {
           dbStatus: 'N',
           name: {
             'like': '%' + req.query.toHospitalName + '%'
           }
         }
-        //console.log('hospitals:' + req.query.toHospitalName);
+        console.log('findHospParams:');
+        console.log(findHospParams);
         Hospital.find(findHospParams).exec(function (err, records) {
           if (err) {
             return callback(err);
           }
-
+          console.log("hospital")
+          console.log(records)
           if (records && records.length > 0) {
             for (var i = 0; i < records.length; i++) {
               hospIds.push(records[i].hospitalid);
@@ -1853,9 +1855,10 @@ module.exports = {
 
       if (req.query.hospitalid) {
         findParams.to_hosp_id = req.query.hospitalid;
+        console.log("hos:"+req.query.hospitalid)
       }
 
-
+      console.log(findParams)
       Transfer.find(findParams).populate('box_id').populate('opo_id').populate('organ_id').populate('transferPerson_id').populate('to_hosp_id').exec(function (err, records) {
         //Transfer.find(findParams).exec(function(err, records) {
 
@@ -1872,12 +1875,15 @@ module.exports = {
         // }
         // BaseController.sendOk('获取转运信息成功', transfers, res);
         console.log('query finish');
+        console.log(records)
         var transfers = [];
+
         for (var i = parseInt(start); i < parseInt(start) + parseInt(number); i++) {
           if (i < records.length) {
             transfers.push(Transfer.detailInfo(records[i]));
 
           } else {
+
             break;
           }
         }
