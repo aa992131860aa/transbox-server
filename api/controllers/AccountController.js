@@ -12,7 +12,7 @@ module.exports = {
 	login: function(req, res) {
 		var username = req.body.username;
 		var pwd = req.body.pwd;
-
+    console.log(username+","+pwd);
 		if (Base.isEmptyString(username) || Base.isEmptyString(pwd)) {
 			BaseController.sendBadParams('参数有误，请检查参数', res);
 			return;

@@ -518,7 +518,7 @@ module.exports = {
       pwd: pwd,
       dbStatus: 'N'
     }
-
+    console.log(findParams);
     Hospital.find(findParams).exec(function(err, records) {
       if (err) {
         BaseController.sendDbError(err, res);

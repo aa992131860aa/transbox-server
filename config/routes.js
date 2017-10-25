@@ -140,7 +140,9 @@ module.exports.routes = addGlobalPrefix({
   'get /boxNum': 'TransferController.getBoxNum',
   //转运基本信息
   'get /infoBase': 'TransferController.getInfoBase',
+
   'put /transfer/:transferid/done': 'TransferController.transferDone',
+
   'get /transfers': 'TransferController.getTransfers',
   'get /transfersOrganType': 'TransferController.getOrganTypes',
   'get /hospitalName': 'TransferController.getHospitalName',

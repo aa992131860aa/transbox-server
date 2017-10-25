@@ -105,7 +105,7 @@ module.exports = {
       return;
     }
     page = parseInt(page);
-    var params  = [page*pageSize,(page+1)*pageSize];
+    var params  = [page*pageSize,pageSize];
     console.log(params)
     var connection = mysql.createConnection(settings.db);
     connection.connect();

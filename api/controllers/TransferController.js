@@ -191,7 +191,7 @@ module.exports = {
           TransferPerson.transact(transaction).findOne(findPersonParams).exec(function (err, record) {
             if (err) {
               transaction.rollback();
-              console.log("organ error:"+err);
+              console.log("organ error:" + err);
               BaseController.sendDbError(err, res);
               return;
             }
@@ -199,7 +199,7 @@ module.exports = {
             if (!record) {
               transaction.rollback();
               BaseController.sendDbError('无法获取该转运人信息', res);
-              console.log("organ error1:"+res);
+              console.log("organ error1:" + res);
               return;
             }
 
@@ -221,14 +221,14 @@ module.exports = {
           TransferPerson.transact(transaction).create(createPersonParams).exec(function (err, record) {
             if (err) {
               transaction.rollback();
-              console.log("organ error2:"+err);
+              console.log("organ error2:" + err);
               BaseController.sendDbError(err, res);
               return;
             }
 
             if (!record) {
               transaction.rollback();
-              console.log("organ error3:"+res);
+              console.log("organ error3:" + res);
               BaseController.sendDbError('无法创建转运人信息', res);
               return;
             }
@@ -384,13 +384,13 @@ module.exports = {
           if (err) {
             transaction.rollback();
             BaseController.sendDbError(err, res);
-            console.log("transfer6:"+err);
+            console.log("transfer6:" + err);
             return;
           }
 
           if (!record) {
             transaction.rollback();
-            console.log("transfer6r:"+record);
+            console.log("transfer6r:" + record);
             BaseController.sendDbError('创建转运失败', res);
 
           } else {
@@ -401,14 +401,14 @@ module.exports = {
             Transfer.transact(transaction).findOne(findParams).populate('box_id').populate('opo_id').populate('organ_id').populate('transferPerson_id').populate('to_hosp_id').exec(function (err, record) {
               if (err) {
                 transaction.rollback();
-                console.log("transfer61:"+err);
+                console.log("transfer61:" + err);
                 BaseController.sendDbError(err, res);
                 return;
               }
 
               if (!record) {
                 transaction.rollback();
-                console.log("transfer6r1:"+record);
+                console.log("transfer6r1:" + record);
                 BaseController.sendDbError('创建转运失败', res);
                 return;
               }
@@ -441,7 +441,6 @@ module.exports = {
       BaseController.sendBadParams(res);
       return;
     }
-
 
 
     //request params
@@ -604,7 +603,7 @@ module.exports = {
           TransferPerson.transact(transaction).findOne(findPersonParams).exec(function (err, record) {
             if (err) {
               transaction.rollback();
-              console.log("organ error:"+err);
+              console.log("organ error:" + err);
               BaseController.sendDbError(err, res);
               return;
             }
@@ -612,7 +611,7 @@ module.exports = {
             if (!record) {
               transaction.rollback();
               BaseController.sendDbError('无法获取该转运人信息', res);
-              console.log("organ error1:"+res);
+              console.log("organ error1:" + res);
               return;
             }
 
@@ -630,18 +629,18 @@ module.exports = {
             hosp_id: boxInfoDb.hospital.hospitalid
           }
           //console.log(createPersonParams);
-             console.log("create person")
+          console.log("create person")
           TransferPerson.transact(transaction).create(createPersonParams).exec(function (err, record) {
             if (err) {
               transaction.rollback();
-              console.log("organ error2:"+err);
+              console.log("organ error2:" + err);
               BaseController.sendDbError(err, res);
               return;
             }
 
             if (!record) {
               transaction.rollback();
-              console.log("organ error3:"+res);
+              console.log("organ error3:" + res);
               BaseController.sendDbError('无法创建转运人信息', res);
               return;
             }
@@ -668,7 +667,7 @@ module.exports = {
               if (err) {
                 transaction.rollback();
                 BaseController.sendDbError(err, res);
-                console.log("opoerr1:"+err)
+                console.log("opoerr1:" + err)
                 return;
               }
 
@@ -774,7 +773,7 @@ module.exports = {
       });
 
       /* =============== step6: create a new transfer =============== */
-      ep.all('box', 'organ', 'person','opo', 'boxUpdated', function (boxInfo, organInfo, personInfo, opoInfo, boxInfo2) {
+      ep.all('box', 'organ', 'person', 'opo', 'boxUpdated', function (boxInfo, organInfo, personInfo, opoInfo, boxInfo2) {
         console.log('step6');
         //base info
         for (var key in baseInfo) {
@@ -797,7 +796,7 @@ module.exports = {
         createParams.opo_id = opoInfo.opoid;
         //var createParams1 = Transfer.detailInfo(opo);
         var findTransfer = {
-          transferid:transferid
+          transferid: transferid
         }
         console.log('transferid');
         console.log(transferid);
@@ -805,13 +804,13 @@ module.exports = {
           if (err) {
             transaction.rollback();
             BaseController.sendDbError(err, res);
-            console.log("transfer6:"+err);
+            console.log("transfer6:" + err);
             return;
           }
 
           if (!record) {
             transaction.rollback();
-            console.log("transfer6r:"+record);
+            console.log("transfer6r:" + record);
             BaseController.sendDbError('创建转运失败', res);
 
           } else {
@@ -819,9 +818,6 @@ module.exports = {
             transaction.commit();
 
             BaseController.sendOk('新建转运成功', 'ok', res);
-
-
-
 
 
           }
@@ -851,29 +847,29 @@ module.exports = {
       BaseController.sendOk('获取转运信息成功', transferInfo, res);
     });
   },
-  getInfoBase:function(req,res){
+  getInfoBase: function (req, res) {
     var transferId = req.query.transferId;
     var connection = mysql.createConnection(settings.db);
     connection.connect();
     var sql = 'select t.transferid t_transferid,t.transferNumber t_transferNumber,t.organCount t_organCount,' +
-    't.boxPin t_boxPin, t.fromCity t_fromCity,t.toHospName t_toHospName,t.tracfficType t_tracfficType,t.tracfficNumber t_tracfficNumber,t.deviceType' +
-    ' t_deviceType,DATE_FORMAT(t.getOrganAt,"%Y-%m-%d") t_getOrganAt,DATE_FORMAT(t.startAt,"%Y-%m-%d") t_startAt,DATE_FORMAT(t.endAt,"%Y-%m-%d") t_endAt,t.`status` t_status,t.createAt ' +
-    't_createAt,t.modifyAt t_modifyAt,b.boxid b_boxid,b.deviceId b_deviceId,b.qrcode b_qrcode,b.model b_model,' +
-    'b.transferStatus b_transferStatus,b.`status` b_status,b.createAt b_createAt,b.modifyAt b_modifyAt' +
-    ',o.organid o_organid,o.segNumber o_segNumber,o.type o_type,o.bloodType o_bloodType,o.bloodSampleCount' +
-    ' o_bloodSampleCount,o.organizationSampleType o_organizationSampleType,o.organizationSampleCount ' +
-    'o_organizationSampleCount,o.createAt o_createAt,o.modifyAt o_modifyAt,h.hospitalid h_hospitalid,h.`name`' +
-    ' h_name,h.district h_district,h.address h_address,h.grade h_grade,h.remark h_remark,h.`status` h_status,' +
-    'h.createAt h_createAt,h.modifyAt h_modifyAt,h.account_id h_account_id,tp.transferPersonid tp_transferPersonid,' +
-    'tp.`name` tp_name,tp.phone tp_phone,tp.organType tp_organType,tp.createAt tp_createAt,tp.modifyAt tp_modifyAt,' +
-    'op.opoid op_opoid,op.`name` op_name,op.district op_district,op.address op_address,op.grade op_grade,' +
-    'op.contactPerson op_contactPerson,op.contactPhone op_contactPhone,op.remark op_remark,op.createAt ' +
-    'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferPerson tp,opo op where ' +
-    't.dbStatus = "N"  and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
-    '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id and t.transferid ="'+transferId+'"';
+      't.boxPin t_boxPin, t.fromCity t_fromCity,t.toHospName t_toHospName,t.tracfficType t_tracfficType,t.tracfficNumber t_tracfficNumber,t.deviceType' +
+      ' t_deviceType,DATE_FORMAT(t.getOrganAt,"%Y-%m-%d") t_getOrganAt,DATE_FORMAT(t.startAt,"%Y-%m-%d") t_startAt,DATE_FORMAT(t.endAt,"%Y-%m-%d") t_endAt,t.`status` t_status,t.createAt ' +
+      't_createAt,t.modifyAt t_modifyAt,b.boxid b_boxid,b.deviceId b_deviceId,b.qrcode b_qrcode,b.model b_model,' +
+      'b.transferStatus b_transferStatus,b.`status` b_status,b.createAt b_createAt,b.modifyAt b_modifyAt' +
+      ',o.organid o_organid,o.segNumber o_segNumber,o.type o_type,o.bloodType o_bloodType,o.bloodSampleCount' +
+      ' o_bloodSampleCount,o.organizationSampleType o_organizationSampleType,o.organizationSampleCount ' +
+      'o_organizationSampleCount,o.createAt o_createAt,o.modifyAt o_modifyAt,h.hospitalid h_hospitalid,h.`name`' +
+      ' h_name,h.district h_district,h.address h_address,h.grade h_grade,h.remark h_remark,h.`status` h_status,' +
+      'h.createAt h_createAt,h.modifyAt h_modifyAt,h.account_id h_account_id,tp.transferPersonid tp_transferPersonid,' +
+      'tp.`name` tp_name,tp.phone tp_phone,tp.organType tp_organType,tp.createAt tp_createAt,tp.modifyAt tp_modifyAt,' +
+      'op.opoid op_opoid,op.`name` op_name,op.district op_district,op.address op_address,op.grade op_grade,' +
+      'op.contactPerson op_contactPerson,op.contactPhone op_contactPhone,op.remark op_remark,op.createAt ' +
+      'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferPerson tp,opo op where ' +
+      't.dbStatus = "N"  and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
+      '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id and t.transferid ="' + transferId + '"';
     console.log(sql);
     connection.query(sql, function (err, rows) {
-      if(err)throw err;
+      if (err)throw err;
 
       BaseController.sendOk('获取转运信息成功', rows, res);
     });
@@ -894,48 +890,47 @@ module.exports = {
     var connection = mysql.createConnection(settings.db);
     connection.connect();
     var info = "";
-    var sql1 = "select count,duration,distance,currentCity,avgTemperature,power,expendPower,maxTemperature,minTemperature,maxHumidity,minHumidity,avgHumidity,DATE_FORMAT(minRecordAt,'%Y-%m-%d %H:%i:%s') minRecordAt from (select count(duration) count,duration,distance,currentCity,avgTemperature,power,expendPower from transferRecord where  transfer_id='"+transferId+"' order by recordAt DESC limit 0,1) as a,(select max(temperature) maxTemperature,min(temperature) minTemperature,max(humidity) maxHumidity,min(humidity)minHumidity,avg(humidity)avgHumidity,min(recordAt) minRecordAt from transferRecord where  transfer_id='"+transferId+"' ) as b;";
+    var sql1 = "select count,duration,distance,currentCity,avgTemperature,power,expendPower,maxTemperature,minTemperature,maxHumidity,minHumidity,avgHumidity,DATE_FORMAT(minRecordAt,'%Y-%m-%d %H:%i:%s') minRecordAt from (select count(duration) count,duration,distance,currentCity,avgTemperature,power,expendPower from transferRecord where  transfer_id='" + transferId + "' order by recordAt DESC limit 0,1) as a,(select max(temperature) maxTemperature,min(temperature) minTemperature,max(humidity) maxHumidity,min(humidity)minHumidity,avg(humidity)avgHumidity,min(recordAt) minRecordAt from transferRecord where  transfer_id='" + transferId + "' ) as b;";
     //console.log(sql1);
-     if(transferId){
-       connection.query(sql1, function (err, rows) {
-         if(err)throw err;
-         info = rows;
-         arr.push(rows);
+    if (transferId) {
+      connection.query(sql1, function (err, rows) {
+        if (err)throw err;
+        info = rows;
+        arr.push(rows);
 
-         var sql2 = "Select transfer_id,DATE_FORMAT(recordAt,'%Y-%m-%d %H:%i:%s') recordAt,DATE_FORMAT(recordAt,'%m-%d %H:%i') recordAt1,longitude,latitude,temperature,humidity From transferRecord  where  transfer_id='"+transferId+"' and recordAt >'2016-05-05' order by recordAt asc";
+        var sql2 = "Select transfer_id,DATE_FORMAT(recordAt,'%Y-%m-%d %H:%i:%s') recordAt,DATE_FORMAT(recordAt,'%m-%d %H:%i') recordAt1,longitude,latitude,temperature,humidity From transferRecord  where  transfer_id='" + transferId + "' and recordAt >'2016-05-05' order by recordAt asc";
 
-         //console.log(sql2);
-         //console.log("=================================================================");
-         //温湿度集
-         connection.query(sql2, function (err, rows) {
-           if(err)throw err;
-           arr.push(rows);
-           BaseController.sendOk('获取转运信息成功', arr, res);
-           connection.end();
-         });
+        //console.log(sql2);
+        //console.log("=================================================================");
+        //温湿度集
+        connection.query(sql2, function (err, rows) {
+          if (err)throw err;
+          arr.push(rows);
+          BaseController.sendOk('获取转运信息成功', arr, res);
+          connection.end();
+        });
 
 
-         //BaseController.sendOk('获取转运信息成功', rows, res);
-       });
-     }else{
+        //BaseController.sendOk('获取转运信息成功', rows, res);
+      });
+    } else {
 
-     }
-
+    }
 
 
   },
-  getBoxNum:function(req,res){
+  getBoxNum: function (req, res) {
     var boxNum = req.query.boxNum;
 
     var page = req.query.page;
     var pageSize = req.query.pageSize;
     var connection = mysql.createConnection(settings.db);
     connection.connect();
-    var sql = "select transferid,transferNumber,fromCity,toHospName,DATE_FORMAT(t.createAt,'%Y-%m-%d %H:%i:%s') createAt,o.segNumber segNumber from transfer t,organ o where o.organid=t.organ_id and box_id = (select boxid  from box where deviceId = '"+boxNum+"') order by createAt DESC limit "+page*pageSize+","+pageSize+";";
+    var sql = "select transferid,transferNumber,fromCity,toHospName,DATE_FORMAT(t.createAt,'%Y-%m-%d %H:%i:%s') createAt,o.segNumber segNumber from transfer t,organ o where o.organid=t.organ_id and box_id = (select boxid  from box where deviceId = '" + boxNum + "') order by createAt DESC limit " + page * pageSize + "," + pageSize + ";";
     console.log(sql);
 
     connection.query(sql, function (err, rows) {
-      if(err)throw err;
+      if (err)throw err;
 
       BaseController.sendOk('获取转运信息成功', rows, res);
     });
@@ -1054,7 +1049,7 @@ module.exports = {
           },
           dbStatus: 'N'
         }
-         console.log(findBox);
+        console.log(findBox);
         var updateBox = {
           transferStatus: 'free'
         }
@@ -1135,25 +1130,25 @@ module.exports = {
       });
     });
   },
-  getOrganTypes:function (req, res) {
+  getOrganTypes: function (req, res) {
 
 
     var connection = mysql.createConnection(settings.db);
     connection.connect();
     var sql = "select type from organ GROUP BY type";
     connection.query(sql, function (err, rows) {
-      if(err)throw err;
+      if (err)throw err;
 
       BaseController.sendOk('获取转运信息成功', rows, res);
     });
     connection.end();
   },
-  getHospitalName:function(req,res){
+  getHospitalName: function (req, res) {
     var connection = mysql.createConnection(settings.db);
     connection.connect();
     var sql = "select name from hospital where name<>'default'";
     connection.query(sql, function (err, rows) {
-      if(err)throw err;
+      if (err)throw err;
 
       BaseController.sendOk('获取转运信息成功', rows, res);
     });
@@ -1162,10 +1157,11 @@ module.exports = {
   getTransfersSql: function (req, res) {
 
 
-
     var start = req.query.start ? req.query.start : 0;
     var number = req.query.number ? req.query.number : 20;
     var hospitalid = req.query.hospitalid;
+    var status =  req.query.status ? req.query.status : "done";
+
     //console.log("hospitalid:"+hospitalid);
     //console.log(settings.db);
     //连接数据库
@@ -1178,68 +1174,73 @@ module.exports = {
     var sort = 'ASC';
     var type = req.query.type;
     if (!type) {
-      type = 't.createAt';
+      type = 't.getTime';
     }
     var reverse = req.query.reverse;
     //console.log("reverse:"+reverse);
-    if (reverse == 'true') {
-      sort = 'DESC';
-    } else {
+    if (reverse == 'false') {
       sort = 'ASC';
+    } else {
+
+      sort = 'DESC';
     }
     //条件
-    var condition ='';
+    var condition = '';
 
-      if(req.query.fromCity){
-          condition += ' and t.fromCity like "%'+req.query.fromCity+'%"';
-      }
-    if(req.query.organSegNumber){
-      condition += ' and o.segNumber like "%'+req.query.organSegNumber+'%"';
+    if (req.query.fromCity) {
+      condition += ' and t.fromCity like "%' + req.query.fromCity + '%"';
     }
-    if(req.query.transferNumber){
-      condition += ' and t.transferNumber like "%'+req.query.transferNumber+'%"';
+    if (req.query.organSegNumber) {
+      condition += ' and t.transferNumber like "%' + req.query.organSegNumber + '%"';
     }
-    if(req.query.transferPersonName){
-      condition += ' and tp.name like "%'+req.query.transferPersonName+'%"';
+    if (req.query.transferNumber) {
+      condition += ' and t.id like "%' + req.query.transferNumber + '%"';
     }
-    if(req.query.toHospitalName&&req.query.toHospitalName!="0"){
-      condition += ' and h.name like "%'+req.query.toHospitalName+'%"';
+    if (req.query.transferPersonName) {
+      condition += ' and t.trueName like "%' + req.query.transferPersonName + '%"';
     }
-    if(req.query.organType&&req.query.organType!="0"){
-      condition += ' and o.type like "%'+req.query.organType+'%"';
-    }if(req.query.beginDate){
-      condition += ' and t.startAt > "'+req.query.beginDate+'"';
+    if (req.query.toHospitalName && req.query.toHospitalName != "0") {
+      condition += ' and h.name like "%' + req.query.toHospitalName + '%"';
     }
-    if(req.query.endDate){
-      condition += ' and t.startAt < "'+req.query.endDate+'"';
+    if (req.query.organType && req.query.organType != "0") {
+      condition += ' and t.organ like "%' + req.query.organType + '%"';
     }
-    if(hospitalid){
-      condition += ' and h.hospitalid = "'+hospitalid+'" ';
+    if (req.query.beginDate) {
+      condition += ' and t.getTime > "' + req.query.beginDate + '"';
+    }
+    if (req.query.endDate) {
+      condition += ' and t.getTime < "' + req.query.endDate + '"';
+    }
+    if (hospitalid) {
+      condition += ' and h.hospitalid = "' + hospitalid + '" ';
     }
     //查询
-    var selectSQL = 'select t.transferid t_transferid,t.transferNumber t_transferNumber,t.organCount t_organCount,' +
-      't.boxPin t_boxPin, t.fromCity t_fromCity,t.toHospName t_toHospName,t.tracfficType t_tracfficType,t.deviceType' +
-      ' t_deviceType,DATE_FORMAT(t.getOrganAt,"%Y-%m-%d") t_getOrganAt,DATE_FORMAT(t.startAt,"%Y-%m-%d") t_startAt,DATE_FORMAT(t.endAt,"%Y-%m-%d") t_endAt,t.`status` t_status,t.createAt ' +
-      't_createAt,t.modifyAt t_modifyAt,b.boxid b_boxid,b.deviceId b_deviceId,b.qrcode b_qrcode,b.model b_model,' +
-      'b.transferStatus b_transferStatus,b.`status` b_status,b.createAt b_createAt,b.modifyAt b_modifyAt' +
-      ',o.organid o_organid,o.segNumber o_segNumber,o.type o_type,o.bloodType o_bloodType,o.bloodSampleCount' +
-      ' o_bloodSampleCount,o.organizationSampleType o_organizationSampleType,o.organizationSampleCount ' +
-      'o_organizationSampleCount,o.createAt o_createAt,o.modifyAt o_modifyAt,h.hospitalid h_hospitalid,h.`name`' +
-      ' h_name,h.district h_district,h.address h_address,h.grade h_grade,h.remark h_remark,h.`status` h_status,' +
-      'h.createAt h_createAt,h.modifyAt h_modifyAt,h.account_id h_account_id,tp.transferPersonid tp_transferPersonid,' +
-      'tp.`name` tp_name,tp.phone tp_phone,tp.organType tp_organType,tp.createAt tp_createAt,tp.modifyAt tp_modifyAt,' +
-      'op.opoid op_opoid,op.`name` op_name,op.district op_district,op.address op_address,op.grade op_grade,' +
-      'op.contactPerson op_contactPerson,op.contactPhone op_contactPhone,op.remark op_remark,op.createAt ' +
-      'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferPerson tp,opo op where ' +
-      't.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
-      '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id '+condition+' ORDER BY ' + type +
-      '  ' + sort + ' limit ' + start + ',' + number;
+    // var selectSQL = 'select t.transferid t_transferid,t.transferNumber t_transferNumber,t.organCount t_organCount,' +
+    //   't.boxPin t_boxPin, t.fromCity t_fromCity,t.toHospName t_toHospName,t.tracfficType t_tracfficType,t.deviceType' +
+    //   ' t_deviceType,DATE_FORMAT(t.getOrganAt,"%Y-%m-%d") t_getOrganAt,DATE_FORMAT(t.startAt,"%Y-%m-%d") t_startAt,DATE_FORMAT(t.endAt,"%Y-%m-%d") t_endAt,t.`status` t_status,t.createAt ' +
+    //   't_createAt,t.modifyAt t_modifyAt,b.boxid b_boxid,b.deviceId b_deviceId,b.qrcode b_qrcode,b.model b_model,' +
+    //   'b.transferStatus b_transferStatus,b.`status` b_status,b.createAt b_createAt,b.modifyAt b_modifyAt' +
+    //   ',o.organid o_organid,o.segNumber o_segNumber,o.type o_type,o.bloodType o_bloodType,o.bloodSampleCount' +
+    //   ' o_bloodSampleCount,o.organizationSampleType o_organizationSampleType,o.organizationSampleCount ' +
+    //   'o_organizationSampleCount,o.createAt o_createAt,o.modifyAt o_modifyAt,h.hospitalid h_hospitalid,h.`name`' +
+    //   ' h_name,h.district h_district,h.address h_address,h.grade h_grade,h.remark h_remark,h.`status` h_status,' +
+    //   'h.createAt h_createAt,h.modifyAt h_modifyAt,h.account_id h_account_id,tp.transferPersonid tp_transferPersonid,' +
+    //   'tp.`name` tp_name,tp.phone tp_phone,tp.organType tp_organType,tp.createAt tp_createAt,tp.modifyAt tp_modifyAt,' +
+    //   'op.opoid op_opoid,op.`name` op_name,op.district op_district,op.address op_address,op.grade op_grade,' +
+    //   'op.contactPerson op_contactPerson,op.contactPhone op_contactPhone,op.remark op_remark,op.createAt ' +
+    //   'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferPerson tp,opo op where ' +
+    //   't.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
+    //   '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id ' + condition + ' ORDER BY ' + type +
+    //   '  ' + sort + ' limit ' + start + ',' + number;
+    var selectSQL = "SELECT t.boxPin,t.tracfficType,t.tracfficNumber,t.id transferNumber,t.transferNumber segNumber,b.model deviceId,t.organ type,t.organNum organCount ,t.trueName name,t.fromCity fromCity ,h.`name` hospitalName,t.getTime startAt,t.blood,t.bloodNum,t.sampleOrgan,t.sampleOrganNum,t.trueName,t.phone,t.contactName,t.contactPhone,t.opoName FROM transfer t, box b, hospital h WHERE t.box_id = b.boxid AND b.hosp_id = h.hospitalid AND t.`status` = '"+status+"' "
+      + condition + " ORDER BY " + type + " " + sort + " limit " + start + "," + number;
     console.log(selectSQL);
 
-    var selectCount = 'select count(t.transferid) count from transfer t,organ o,box b,hospital h,transferPerson tp,opo' +
-      ' op where t.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id ' +
-      'and o.organid = t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id '+condition;
-    //console.log(selectCount);
+    // var selectCount = 'select count(t.transferid) count from transfer t,organ o,box b,hospital h,transferPerson tp,opo' +
+    //   ' op where t.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id ' +
+    //   'and o.organid = t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id ' + condition;
+    var selectCount = "SELECT count(t.id) count  FROM transfer t, box b, hospital h  WHERE t.box_id = b.boxid AND b.hosp_id = h.hospitalid AND t.`status` = '"+status+"' " + condition;
+    console.log(selectCount);
     connection.query(selectCount, function (err1, rows1) {
       if (err1) {
         throw err1;
@@ -1256,81 +1257,110 @@ module.exports = {
 
           for (var i = 0; i < rows.length; i++) {
 
-
             var transbox = new Object();
-            var boxInfo = new Object();
-            var organInfo = new Object();
-            var toHospitalInfo = new Object();
-            var transferPersonInfo = new Object();
-            var opoInfo = new Object();
-            transbox.transferid = rows[i]['t_transferid'];
-            transbox.transferNumber = rows[i]['t_transferNumber'];
-            transbox.organCount = rows[i]['t_organCount'];
-            transbox.boxPin = rows[i]['t_boxPin'];
-            transbox.fromCity = rows[i]['t_fromCity'];
-            transbox.toHospName = rows[i]['t_toHospName'];
-            transbox.tracfficType = rows[i]['t_tracfficType'];
-            transbox.deviceType = rows[i]['t_deviceType'];
-            transbox.getOrganAt = rows[i]['t_getOrganAt'];
-            transbox.startAt = rows[i]['t_startAt'];
-            transbox.endAt = rows[i]['t_endAt'];
-            transbox.status = rows[i]['t_status'];
-            transbox.createAt = rows[i]['t_createAt'];
-            transbox.modifyAt = rows[i]['t_modifyAt'];
+            transbox.transferNumber = rows[i]['transferNumber'];
+            transbox.transferid = rows[i]['transferNumber'];
+            transbox.segNumber = rows[i]['segNumber'];
+            transbox.deviceId = rows[i]['deviceId'];
+            transbox.type = rows[i]['type'];
+            transbox.organCount = rows[i]['organCount'];
+            transbox.name = rows[i]['name'];
+            transbox.fromCity = rows[i]['fromCity'];
+            transbox.hospitalName = rows[i]['hospitalName'];
+            transbox.startAt = rows[i]['startAt'];
+            transbox.trueName = rows[i]['trueName'];
+            transbox.phone = rows[i]['phone'];
+            transbox.contactName = rows[i]['contactName'];
+            transbox.contactPhone = rows[i]['contactPhone'];
+            transbox.blood = rows[i]['blood'];
+            transbox.bloodNum = rows[i]['bloodNum'];
+            transbox.sampleOrgan = rows[i]['sampleOrgan'];
+            transbox.sampleOrganNum = rows[i]['sampleOrganNum'];
+            transbox.opoName = rows[i]['opoName'];
+            transbox.tracfficType = rows[i]['tracfficType'];
+            transbox.tracfficNumber = rows[i]['tracfficNumber'];
+            transbox.boxPin = rows[i]['boxPin'];
 
-            boxInfo.boxid = rows[i]['b_boxid'];
-            boxInfo.deviceId = rows[i]['b_deviceId'];
-            boxInfo.qrcode = rows[i]['b_qrcode'];
-            boxInfo.model = rows[i]['b_model'];
-            boxInfo.transferStatus = rows[i]['b_transferStatus'];
-            boxInfo.status = rows[i]['b_status'];
-            boxInfo.createAt = rows[i]['b_createAt'];
-            boxInfo.modifyAt = rows[i]['b_modifyAt'];
-            transbox.boxInfo = boxInfo;
 
-            organInfo.organid = rows[i]['o_organid'];
-            organInfo.segNumber = rows[i]['o_segNumber'];
-            organInfo.type = rows[i]['o_type'];
-            organInfo.bloodType = rows[i]['o_bloodType'];
-            organInfo.bloodSampleCount = rows[i]['o_bloodSampleCount'];
-            organInfo.organizationSampleType = rows[i]['o_organizationSampleType'];
-            organInfo.organizationSampleCount = rows[i]['o_organizationSampleCount'];
-            organInfo.createAt = rows[i]['o_createAt'];
-            organInfo.modifyAt = rows[i]['o_modifyAt'];
-            transbox.organInfo = organInfo;
 
-            toHospitalInfo.hospitalid = rows[i]['h_hospitalid'];
-            toHospitalInfo.name = rows[i]['h_name'];
-            toHospitalInfo.district = rows[i]['h_district'];
-            toHospitalInfo.address = rows[i]['h_address'];
-            toHospitalInfo.grade = rows[i]['h_grade'];
-            toHospitalInfo.remark = rows[i]['h_remark'];
-            toHospitalInfo.status = rows[i]['h_status'];
-            toHospitalInfo.createAt = rows[i]['h_createAt'];
-            toHospitalInfo.modifyAt = rows[i]['h_modifyAt'];
-            toHospitalInfo.account_id = rows[i]['h_account_id'];
-            transbox.toHospitalInfo = toHospitalInfo;
 
-            transferPersonInfo.transferPersonid = rows[i]['tp_transferPersonid'];
-            transferPersonInfo.name = rows[i]['tp_name'];
-            transferPersonInfo.phone = rows[i]['tp_phone'];
-            transferPersonInfo.organType = rows[i]['tp_organType'];
-            transferPersonInfo.createAt = rows[i]['tp_createAt'];
-            transferPersonInfo.modifyAt = rows[i]['tp_modifyAt'];
-            transbox.transferPersonInfo = transferPersonInfo;
-
-            opoInfo.opoid = rows[i]['op_opoid'];
-            opoInfo.name = rows[i]['op_name'];
-            opoInfo.district = rows[i]['op_district'];
-            opoInfo.address = rows[i]['op_address'];
-            opoInfo.grade = rows[i]['op_grade'];
-            opoInfo.contactPerson = rows[i]['op_contactPerson'];
-            opoInfo.contactPhone = rows[i]['op_contactPhone'];
-            opoInfo.remark = rows[i]['op_remark'];
-            opoInfo.createAt = rows[i]['op_createAt'];
-            opoInfo.modifyAt = rows[i]['op_modifyAt'];
-            transbox.opoInfo = opoInfo;
             transfers.push(transbox);
+            //
+            // var transbox = new Object();
+            // var boxInfo = new Object();
+            // var organInfo = new Object();
+            // var toHospitalInfo = new Object();
+            // var transferPersonInfo = new Object();
+            // var opoInfo = new Object();
+            // transbox.transferid = rows[i]['t_transferid'];
+            // transbox.transferNumber = rows[i]['t_transferNumber'];
+            // transbox.organCount = rows[i]['t_organCount'];
+            // transbox.boxPin = rows[i]['t_boxPin'];
+            // transbox.fromCity = rows[i]['t_fromCity'];
+            // transbox.toHospName = rows[i]['t_toHospName'];
+            // transbox.tracfficType = rows[i]['t_tracfficType'];
+            // transbox.deviceType = rows[i]['t_deviceType'];
+            // transbox.getOrganAt = rows[i]['t_getOrganAt'];
+            // transbox.startAt = rows[i]['t_startAt'];
+            // transbox.endAt = rows[i]['t_endAt'];
+            // transbox.status = rows[i]['t_status'];
+            // transbox.createAt = rows[i]['t_createAt'];
+            // transbox.modifyAt = rows[i]['t_modifyAt'];
+            //
+            // boxInfo.boxid = rows[i]['b_boxid'];
+            // boxInfo.deviceId = rows[i]['b_deviceId'];
+            // boxInfo.qrcode = rows[i]['b_qrcode'];
+            // boxInfo.model = rows[i]['b_model'];
+            // boxInfo.transferStatus = rows[i]['b_transferStatus'];
+            // boxInfo.status = rows[i]['b_status'];
+            // boxInfo.createAt = rows[i]['b_createAt'];
+            // boxInfo.modifyAt = rows[i]['b_modifyAt'];
+            // transbox.boxInfo = boxInfo;
+            //
+            // organInfo.organid = rows[i]['o_organid'];
+            // organInfo.segNumber = rows[i]['o_segNumber'];
+            // organInfo.type = rows[i]['o_type'];
+            // organInfo.bloodType = rows[i]['o_bloodType'];
+            // organInfo.bloodSampleCount = rows[i]['o_bloodSampleCount'];
+            // organInfo.organizationSampleType = rows[i]['o_organizationSampleType'];
+            // organInfo.organizationSampleCount = rows[i]['o_organizationSampleCount'];
+            // organInfo.createAt = rows[i]['o_createAt'];
+            // organInfo.modifyAt = rows[i]['o_modifyAt'];
+            // transbox.organInfo = organInfo;
+            //
+            // toHospitalInfo.hospitalid = rows[i]['h_hospitalid'];
+            // toHospitalInfo.name = rows[i]['h_name'];
+            // toHospitalInfo.district = rows[i]['h_district'];
+            // toHospitalInfo.address = rows[i]['h_address'];
+            // toHospitalInfo.grade = rows[i]['h_grade'];
+            // toHospitalInfo.remark = rows[i]['h_remark'];
+            // toHospitalInfo.status = rows[i]['h_status'];
+            // toHospitalInfo.createAt = rows[i]['h_createAt'];
+            // toHospitalInfo.modifyAt = rows[i]['h_modifyAt'];
+            // toHospitalInfo.account_id = rows[i]['h_account_id'];
+            // transbox.toHospitalInfo = toHospitalInfo;
+            //
+            // transferPersonInfo.transferPersonid = rows[i]['tp_transferPersonid'];
+            // transferPersonInfo.name = rows[i]['tp_name'];
+            // transferPersonInfo.phone = rows[i]['tp_phone'];
+            // transferPersonInfo.organType = rows[i]['tp_organType'];
+            // transferPersonInfo.createAt = rows[i]['tp_createAt'];
+            // transferPersonInfo.modifyAt = rows[i]['tp_modifyAt'];
+            // transbox.transferPersonInfo = transferPersonInfo;
+            //
+            // opoInfo.opoid = rows[i]['op_opoid'];
+            // opoInfo.name = rows[i]['op_name'];
+            // opoInfo.district = rows[i]['op_district'];
+            // opoInfo.address = rows[i]['op_address'];
+            // opoInfo.grade = rows[i]['op_grade'];
+            // opoInfo.contactPerson = rows[i]['op_contactPerson'];
+            // opoInfo.contactPhone = rows[i]['op_contactPhone'];
+            // opoInfo.remark = rows[i]['op_remark'];
+            // opoInfo.createAt = rows[i]['op_createAt'];
+            // opoInfo.modifyAt = rows[i]['op_modifyAt'];
+            // transbox.opoInfo = opoInfo;
+            //
+            // transfers.push(transbox);
 
 
           }
@@ -1363,7 +1393,6 @@ module.exports = {
   getTransfersSqlAndroid: function (req, res) {
 
 
-
     var start = req.query.start ? req.query.start : 0;
     var number = req.query.number ? req.query.number : 20;
     var hospitalid = req.query.hospitalid;
@@ -1389,33 +1418,34 @@ module.exports = {
       sort = 'ASC';
     }
     //条件
-    var condition ='';
+    var condition = '';
 
-    if(req.query.fromCity){
-      condition += ' and t.fromCity like "%'+req.query.fromCity+'%"';
+    if (req.query.fromCity) {
+      condition += ' and t.fromCity like "%' + req.query.fromCity + '%"';
     }
-    if(req.query.organSegNumber){
-      condition += ' and o.segNumber like "%'+req.query.organSegNumber+'%"';
+    if (req.query.organSegNumber) {
+      condition += ' and o.segNumber like "%' + req.query.organSegNumber + '%"';
     }
-    if(req.query.transferNumber){
-      condition += ' and t.transferNumber like "%'+req.query.transferNumber+'%"';
+    if (req.query.transferNumber) {
+      condition += ' and t.transferNumber like "%' + req.query.transferNumber + '%"';
     }
-    if(req.query.transferPersonName){
-      condition += ' and tp.name like "%'+req.query.transferPersonName+'%"';
+    if (req.query.transferPersonName) {
+      condition += ' and tp.name like "%' + req.query.transferPersonName + '%"';
     }
-    if(req.query.toHospitalName&&req.query.toHospitalName!="0"){
-      condition += ' and h.name like "%'+req.query.toHospitalName+'%"';
+    if (req.query.toHospitalName && req.query.toHospitalName != "0") {
+      condition += ' and h.name like "%' + req.query.toHospitalName + '%"';
     }
-    if(req.query.organType&&req.query.organType!="0"){
-      condition += ' and o.type like "%'+req.query.organType+'%"';
-    }if(req.query.beginDate){
-      condition += ' and t.startAt > "'+req.query.beginDate+'"';
+    if (req.query.organType && req.query.organType != "0") {
+      condition += ' and o.type like "%' + req.query.organType + '%"';
     }
-    if(req.query.endDate){
-      condition += ' and t.startAt < "'+req.query.endDate+'"';
+    if (req.query.beginDate) {
+      condition += ' and t.startAt > "' + req.query.beginDate + '"';
     }
-    if(hospitalid){
-      condition += ' and h.hospitalid = "'+hospitalid+'" ';
+    if (req.query.endDate) {
+      condition += ' and t.startAt < "' + req.query.endDate + '"';
+    }
+    if (hospitalid) {
+      condition += ' and h.hospitalid = "' + hospitalid + '" ';
     }
     //查询
     var selectSQL = 'select t.transferid t_transferid,t.transferNumber t_transferNumber,t.organCount t_organCount,' +
@@ -1433,120 +1463,117 @@ module.exports = {
       'op.contactPerson op_contactPerson,op.contactPhone op_contactPhone,op.remark op_remark,op.createAt ' +
       'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferPerson tp,opo op where ' +
       't.dbStatus = "N" and t.`status` = "done" and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
-      '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id '+condition+'  ORDER BY ' + type +
-      '  ' + sort + ' limit ' + start*number + ',' + number;
+      '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id ' + condition + '  ORDER BY ' + type +
+      '  ' + sort + ' limit ' + start * number + ',' + number;
     console.log(selectSQL);
 
 
+    //console.log("count:" + count);
+    connection.query(selectSQL, function (err, rows) {
+      if (err) throw err;
+      //for (var i = 0; i < rows.length; i++) {
+      //  arr[i] = rows[i].name;
+      //
+      //}
+      var transfers = [];
 
-        //console.log("count:" + count);
-        connection.query(selectSQL, function (err, rows) {
-          if (err) throw err;
-          //for (var i = 0; i < rows.length; i++) {
-          //  arr[i] = rows[i].name;
-          //
-          //}
-          var transfers = [];
-
-          for (var i = 0; i < rows.length; i++) {
-
-
-            var transbox = new Object();
-            var boxInfo = new Object();
-            var organInfo = new Object();
-            var toHospitalInfo = new Object();
-            var transferPersonInfo = new Object();
-            var opoInfo = new Object();
-            transbox.transferid = rows[i]['t_transferid'];
-            transbox.transferNumber = rows[i]['t_transferNumber'];
-            transbox.organCount = rows[i]['t_organCount'];
-            transbox.boxPin = rows[i]['t_boxPin'];
-            transbox.fromCity = rows[i]['t_fromCity'];
-            transbox.toHospName = rows[i]['t_toHospName'];
-            transbox.tracfficType = rows[i]['t_tracfficType'];
-            transbox.deviceType = rows[i]['t_deviceType'];
-            transbox.getOrganAt = rows[i]['t_getOrganAt'];
-            transbox.startAt = rows[i]['t_startAt'];
-            transbox.endAt = rows[i]['t_endAt'];
-            transbox.status = rows[i]['t_status'];
-            transbox.createAt = rows[i]['t_createAt'];
-            transbox.modifyAt = rows[i]['t_modifyAt'];
-
-            boxInfo.boxid = rows[i]['b_boxid'];
-            boxInfo.deviceId = rows[i]['b_deviceId'];
-            boxInfo.qrcode = rows[i]['b_qrcode'];
-            boxInfo.model = rows[i]['b_model'];
-            boxInfo.transferStatus = rows[i]['b_transferStatus'];
-            boxInfo.status = rows[i]['b_status'];
-            boxInfo.createAt = rows[i]['b_createAt'];
-            boxInfo.modifyAt = rows[i]['b_modifyAt'];
-            transbox.boxInfo = boxInfo;
-
-            organInfo.organid = rows[i]['o_organid'];
-            organInfo.segNumber = rows[i]['o_segNumber'];
-            organInfo.type = rows[i]['o_type'];
-            organInfo.bloodType = rows[i]['o_bloodType'];
-            organInfo.bloodSampleCount = rows[i]['o_bloodSampleCount'];
-            organInfo.organizationSampleType = rows[i]['o_organizationSampleType'];
-            organInfo.organizationSampleCount = rows[i]['o_organizationSampleCount'];
-            organInfo.createAt = rows[i]['o_createAt'];
-            organInfo.modifyAt = rows[i]['o_modifyAt'];
-            transbox.organInfo = organInfo;
-
-            toHospitalInfo.hospitalid = rows[i]['h_hospitalid'];
-            toHospitalInfo.name = rows[i]['h_name'];
-            toHospitalInfo.district = rows[i]['h_district'];
-            toHospitalInfo.address = rows[i]['h_address'];
-            toHospitalInfo.grade = rows[i]['h_grade'];
-            toHospitalInfo.remark = rows[i]['h_remark'];
-            toHospitalInfo.status = rows[i]['h_status'];
-            toHospitalInfo.createAt = rows[i]['h_createAt'];
-            toHospitalInfo.modifyAt = rows[i]['h_modifyAt'];
-            toHospitalInfo.account_id = rows[i]['h_account_id'];
-            transbox.toHospitalInfo = toHospitalInfo;
-
-            transferPersonInfo.transferPersonid = rows[i]['tp_transferPersonid'];
-            transferPersonInfo.name = rows[i]['tp_name'];
-            transferPersonInfo.phone = rows[i]['tp_phone'];
-            transferPersonInfo.organType = rows[i]['tp_organType'];
-            transferPersonInfo.createAt = rows[i]['tp_createAt'];
-            transferPersonInfo.modifyAt = rows[i]['tp_modifyAt'];
-            transbox.transferPersonInfo = transferPersonInfo;
-
-            opoInfo.opoid = rows[i]['op_opoid'];
-            opoInfo.name = rows[i]['op_name'];
-            opoInfo.district = rows[i]['op_district'];
-            opoInfo.address = rows[i]['op_address'];
-            opoInfo.grade = rows[i]['op_grade'];
-            opoInfo.contactPerson = rows[i]['op_contactPerson'];
-            opoInfo.contactPhone = rows[i]['op_contactPhone'];
-            opoInfo.remark = rows[i]['op_remark'];
-            opoInfo.createAt = rows[i]['op_createAt'];
-            opoInfo.modifyAt = rows[i]['op_modifyAt'];
-            transbox.opoInfo = opoInfo;
-            transfers.push(transbox);
+      for (var i = 0; i < rows.length; i++) {
 
 
-          }
+        var transbox = new Object();
+        var boxInfo = new Object();
+        var organInfo = new Object();
+        var toHospitalInfo = new Object();
+        var transferPersonInfo = new Object();
+        var opoInfo = new Object();
+        transbox.transferid = rows[i]['t_transferid'];
+        transbox.transferNumber = rows[i]['t_transferNumber'];
+        transbox.organCount = rows[i]['t_organCount'];
+        transbox.boxPin = rows[i]['t_boxPin'];
+        transbox.fromCity = rows[i]['t_fromCity'];
+        transbox.toHospName = rows[i]['t_toHospName'];
+        transbox.tracfficType = rows[i]['t_tracfficType'];
+        transbox.deviceType = rows[i]['t_deviceType'];
+        transbox.getOrganAt = rows[i]['t_getOrganAt'];
+        transbox.startAt = rows[i]['t_startAt'];
+        transbox.endAt = rows[i]['t_endAt'];
+        transbox.status = rows[i]['t_status'];
+        transbox.createAt = rows[i]['t_createAt'];
+        transbox.modifyAt = rows[i]['t_modifyAt'];
+
+        boxInfo.boxid = rows[i]['b_boxid'];
+        boxInfo.deviceId = rows[i]['b_deviceId'];
+        boxInfo.qrcode = rows[i]['b_qrcode'];
+        boxInfo.model = rows[i]['b_model'];
+        boxInfo.transferStatus = rows[i]['b_transferStatus'];
+        boxInfo.status = rows[i]['b_status'];
+        boxInfo.createAt = rows[i]['b_createAt'];
+        boxInfo.modifyAt = rows[i]['b_modifyAt'];
+        transbox.boxInfo = boxInfo;
+
+        organInfo.organid = rows[i]['o_organid'];
+        organInfo.segNumber = rows[i]['o_segNumber'];
+        organInfo.type = rows[i]['o_type'];
+        organInfo.bloodType = rows[i]['o_bloodType'];
+        organInfo.bloodSampleCount = rows[i]['o_bloodSampleCount'];
+        organInfo.organizationSampleType = rows[i]['o_organizationSampleType'];
+        organInfo.organizationSampleCount = rows[i]['o_organizationSampleCount'];
+        organInfo.createAt = rows[i]['o_createAt'];
+        organInfo.modifyAt = rows[i]['o_modifyAt'];
+        transbox.organInfo = organInfo;
+
+        toHospitalInfo.hospitalid = rows[i]['h_hospitalid'];
+        toHospitalInfo.name = rows[i]['h_name'];
+        toHospitalInfo.district = rows[i]['h_district'];
+        toHospitalInfo.address = rows[i]['h_address'];
+        toHospitalInfo.grade = rows[i]['h_grade'];
+        toHospitalInfo.remark = rows[i]['h_remark'];
+        toHospitalInfo.status = rows[i]['h_status'];
+        toHospitalInfo.createAt = rows[i]['h_createAt'];
+        toHospitalInfo.modifyAt = rows[i]['h_modifyAt'];
+        toHospitalInfo.account_id = rows[i]['h_account_id'];
+        transbox.toHospitalInfo = toHospitalInfo;
+
+        transferPersonInfo.transferPersonid = rows[i]['tp_transferPersonid'];
+        transferPersonInfo.name = rows[i]['tp_name'];
+        transferPersonInfo.phone = rows[i]['tp_phone'];
+        transferPersonInfo.organType = rows[i]['tp_organType'];
+        transferPersonInfo.createAt = rows[i]['tp_createAt'];
+        transferPersonInfo.modifyAt = rows[i]['tp_modifyAt'];
+        transbox.transferPersonInfo = transferPersonInfo;
+
+        opoInfo.opoid = rows[i]['op_opoid'];
+        opoInfo.name = rows[i]['op_name'];
+        opoInfo.district = rows[i]['op_district'];
+        opoInfo.address = rows[i]['op_address'];
+        opoInfo.grade = rows[i]['op_grade'];
+        opoInfo.contactPerson = rows[i]['op_contactPerson'];
+        opoInfo.contactPhone = rows[i]['op_contactPhone'];
+        opoInfo.remark = rows[i]['op_remark'];
+        opoInfo.createAt = rows[i]['op_createAt'];
+        opoInfo.modifyAt = rows[i]['op_modifyAt'];
+        transbox.opoInfo = opoInfo;
+        transfers.push(transbox);
 
 
-          //transfers = JSON.stringify(transfers);
-          //transfers =JSON.parse(transfers);
-          //console.log(transfers);
+      }
 
 
-          BaseController.sendOk('获取转运信息成功', transfers, res);
-
-          //把搜索值输出
-          //app.get('/', function (req, res) {
-          //  res.send(arr);
-          //});
-
-          //关闭连接
-          connection.end();
-        });
+      //transfers = JSON.stringify(transfers);
+      //transfers =JSON.parse(transfers);
+      //console.log(transfers);
 
 
+      BaseController.sendOk('获取转运信息成功', transfers, res);
+
+      //把搜索值输出
+      //app.get('/', function (req, res) {
+      //  res.send(arr);
+      //});
+
+      //关闭连接
+      connection.end();
+    });
 
 
   },
@@ -1554,13 +1581,13 @@ module.exports = {
     var page = req.query.page;
     var pageSize = req.query.pageSize;
     var status = req.query.status;
-    if(Base.isEmptyString(page)||Base.isEmptyString(pageSize)||Base.isEmptyString(status)){
+    if (Base.isEmptyString(page) || Base.isEmptyString(pageSize) || Base.isEmptyString(status)) {
       BaseController.sendBadParams(res);
       return;
     }
     page = parseInt(page);
     pageSize = parseInt(pageSize);
-    var params  = [status,page*pageSize,(page+1)*pageSize];
+    var params = [status, page * pageSize, (page + 1) * pageSize];
     //连接数据库
     var connection = mysql.createConnection(settings.db);
     connection.connect();
@@ -1582,110 +1609,111 @@ module.exports = {
       'op_createAt,op.modifyAt op_modifyAt from transfer t,organ o,box b,hospital h,transferPerson tp,opo op where ' +
       't.dbStatus = "N"  and b.boxid = t.box_id and h.hospitalid = t.to_hosp_id and o.organid ' +
       '= t.organ_id and tp.transferPersonid = t.transferPerson_id and op.opoid = t.opo_id and t.status = ?  ORDER BY t.createAt limit ?,?';
-       console.log(selectSQL);
-       console.log(params)
-        connection.query(selectSQL,params, function (err, rows) {
-          if (err) throw err;
+    console.log(selectSQL);
+    console.log(params)
+    connection.query(selectSQL, params, function (err, rows) {
+      if (err) throw err;
 
-          var transfers = [];
+      var transfers = [];
 
-          for (var i = 0; i < rows.length; i++) {
-
-
-            var transbox = new Object();
-            var boxInfo = new Object();
-            var organInfo = new Object();
-            var toHospitalInfo = new Object();
-            var transferPersonInfo = new Object();
-            var opoInfo = new Object();
-            transbox.transferid = rows[i]['t_transferid'];
-            transbox.transferNumber = rows[i]['t_transferNumber'];
-            transbox.organCount = rows[i]['t_organCount'];
-            transbox.boxPin = rows[i]['t_boxPin'];
-            transbox.fromCity = rows[i]['t_fromCity'];
-            transbox.toHospName = rows[i]['t_toHospName'];
-            transbox.tracfficType = rows[i]['t_tracfficType'];
-            transbox.deviceType = rows[i]['t_deviceType'];
-            transbox.getOrganAt = rows[i]['t_getOrganAt'];
-            transbox.startAt = rows[i]['t_startAt'];
-            transbox.endAt = rows[i]['t_endAt'];
-            transbox.status = rows[i]['t_status'];
-            transbox.createAt = rows[i]['t_createAt'];
-            transbox.modifyAt = rows[i]['t_modifyAt'];
-
-            boxInfo.boxid = rows[i]['b_boxid'];
-            boxInfo.deviceId = rows[i]['b_deviceId'];
-            boxInfo.qrcode = rows[i]['b_qrcode'];
-            boxInfo.model = rows[i]['b_model'];
-            boxInfo.transferStatus = rows[i]['b_transferStatus'];
-            boxInfo.status = rows[i]['b_status'];
-            boxInfo.createAt = rows[i]['b_createAt'];
-            boxInfo.modifyAt = rows[i]['b_modifyAt'];
-            transbox.boxInfo = boxInfo;
-
-            organInfo.organid = rows[i]['o_organid'];
-            organInfo.segNumber = rows[i]['o_segNumber'];
-            organInfo.type = rows[i]['o_type'];
-            organInfo.bloodType = rows[i]['o_bloodType'];
-            organInfo.bloodSampleCount = rows[i]['o_bloodSampleCount'];
-            organInfo.organizationSampleType = rows[i]['o_organizationSampleType'];
-            organInfo.organizationSampleCount = rows[i]['o_organizationSampleCount'];
-            organInfo.createAt = rows[i]['o_createAt'];
-            organInfo.modifyAt = rows[i]['o_modifyAt'];
-            transbox.organInfo = organInfo;
-
-            toHospitalInfo.hospitalid = rows[i]['h_hospitalid'];
-            toHospitalInfo.name = rows[i]['h_name'];
-            toHospitalInfo.district = rows[i]['h_district'];
-            toHospitalInfo.address = rows[i]['h_address'];
-            toHospitalInfo.grade = rows[i]['h_grade'];
-            toHospitalInfo.remark = rows[i]['h_remark'];
-            toHospitalInfo.status = rows[i]['h_status'];
-            toHospitalInfo.createAt = rows[i]['h_createAt'];
-            toHospitalInfo.modifyAt = rows[i]['h_modifyAt'];
-            toHospitalInfo.account_id = rows[i]['h_account_id'];
-            transbox.toHospitalInfo = toHospitalInfo;
-
-            transferPersonInfo.transferPersonid = rows[i]['tp_transferPersonid'];
-            transferPersonInfo.name = rows[i]['tp_name'];
-            transferPersonInfo.phone = rows[i]['tp_phone'];
-            transferPersonInfo.organType = rows[i]['tp_organType'];
-            transferPersonInfo.createAt = rows[i]['tp_createAt'];
-            transferPersonInfo.modifyAt = rows[i]['tp_modifyAt'];
-            transbox.transferPersonInfo = transferPersonInfo;
-
-            opoInfo.opoid = rows[i]['op_opoid'];
-            opoInfo.name = rows[i]['op_name'];
-            opoInfo.district = rows[i]['op_district'];
-            opoInfo.address = rows[i]['op_address'];
-            opoInfo.grade = rows[i]['op_grade'];
-            opoInfo.contactPerson = rows[i]['op_contactPerson'];
-            opoInfo.contactPhone = rows[i]['op_contactPhone'];
-            opoInfo.remark = rows[i]['op_remark'];
-            opoInfo.createAt = rows[i]['op_createAt'];
-            opoInfo.modifyAt = rows[i]['op_modifyAt'];
-            transbox.opoInfo = opoInfo;
-            transfers.push(transbox);
+      for (var i = 0; i < rows.length; i++) {
 
 
-          }
+        var transbox = new Object();
+        var boxInfo = new Object();
+        var organInfo = new Object();
+        var toHospitalInfo = new Object();
+        var transferPersonInfo = new Object();
+        var opoInfo = new Object();
+        transbox.transferid = rows[i]['t_transferid'];
+        transbox.transferNumber = rows[i]['t_transferNumber'];
+        transbox.organCount = rows[i]['t_organCount'];
+        transbox.boxPin = rows[i]['t_boxPin'];
+        transbox.fromCity = rows[i]['t_fromCity'];
+        transbox.toHospName = rows[i]['t_toHospName'];
+        transbox.tracfficType = rows[i]['t_tracfficType'];
+        transbox.deviceType = rows[i]['t_deviceType'];
+        transbox.getOrganAt = rows[i]['t_getOrganAt'];
+        transbox.startAt = rows[i]['t_startAt'];
+        transbox.endAt = rows[i]['t_endAt'];
+        transbox.status = rows[i]['t_status'];
+        transbox.createAt = rows[i]['t_createAt'];
+        transbox.modifyAt = rows[i]['t_modifyAt'];
+
+        boxInfo.boxid = rows[i]['b_boxid'];
+        boxInfo.deviceId = rows[i]['b_deviceId'];
+        boxInfo.qrcode = rows[i]['b_qrcode'];
+        boxInfo.model = rows[i]['b_model'];
+        boxInfo.transferStatus = rows[i]['b_transferStatus'];
+        boxInfo.status = rows[i]['b_status'];
+        boxInfo.createAt = rows[i]['b_createAt'];
+        boxInfo.modifyAt = rows[i]['b_modifyAt'];
+        transbox.boxInfo = boxInfo;
+
+        organInfo.organid = rows[i]['o_organid'];
+        organInfo.segNumber = rows[i]['o_segNumber'];
+        organInfo.type = rows[i]['o_type'];
+        organInfo.bloodType = rows[i]['o_bloodType'];
+        organInfo.bloodSampleCount = rows[i]['o_bloodSampleCount'];
+        organInfo.organizationSampleType = rows[i]['o_organizationSampleType'];
+        organInfo.organizationSampleCount = rows[i]['o_organizationSampleCount'];
+        organInfo.createAt = rows[i]['o_createAt'];
+        organInfo.modifyAt = rows[i]['o_modifyAt'];
+        transbox.organInfo = organInfo;
+
+        toHospitalInfo.hospitalid = rows[i]['h_hospitalid'];
+        toHospitalInfo.name = rows[i]['h_name'];
+        toHospitalInfo.district = rows[i]['h_district'];
+        toHospitalInfo.address = rows[i]['h_address'];
+        toHospitalInfo.grade = rows[i]['h_grade'];
+        toHospitalInfo.remark = rows[i]['h_remark'];
+        toHospitalInfo.status = rows[i]['h_status'];
+        toHospitalInfo.createAt = rows[i]['h_createAt'];
+        toHospitalInfo.modifyAt = rows[i]['h_modifyAt'];
+        toHospitalInfo.account_id = rows[i]['h_account_id'];
+        transbox.toHospitalInfo = toHospitalInfo;
+
+        transferPersonInfo.transferPersonid = rows[i]['tp_transferPersonid'];
+        transferPersonInfo.name = rows[i]['tp_name'];
+        transferPersonInfo.phone = rows[i]['tp_phone'];
+        transferPersonInfo.organType = rows[i]['tp_organType'];
+        transferPersonInfo.createAt = rows[i]['tp_createAt'];
+        transferPersonInfo.modifyAt = rows[i]['tp_modifyAt'];
+        transbox.transferPersonInfo = transferPersonInfo;
+
+        opoInfo.opoid = rows[i]['op_opoid'];
+        opoInfo.name = rows[i]['op_name'];
+        opoInfo.district = rows[i]['op_district'];
+        opoInfo.address = rows[i]['op_address'];
+        opoInfo.grade = rows[i]['op_grade'];
+        opoInfo.contactPerson = rows[i]['op_contactPerson'];
+        opoInfo.contactPhone = rows[i]['op_contactPhone'];
+        opoInfo.remark = rows[i]['op_remark'];
+        opoInfo.createAt = rows[i]['op_createAt'];
+        opoInfo.modifyAt = rows[i]['op_modifyAt'];
+        transbox.opoInfo = opoInfo;
+        transfers.push(transbox);
 
 
-          BaseController.sendOk('获取转运信息成功', transfers, res);
+      }
 
-          //把搜索值输出
-          //app.get('/', function (req, res) {
-          //  res.send(arr);
-          //});
 
-          //关闭连接
-          connection.end();
-        });
+      BaseController.sendOk('获取转运信息成功', transfers, res);
+
+      //把搜索值输出
+      //app.get('/', function (req, res) {
+      //  res.send(arr);
+      //});
+
+      //关闭连接
+      connection.end();
+    });
 
   },
   getTransfers: function (req, res) {
     var start = req.query.start ? req.query.start : 0;
     var number = req.query.number ? req.query.number : 6;
+
 
     var findParams = {
       dbStatus: 'N',
@@ -1736,7 +1764,7 @@ module.exports = {
 
     async.series([function (callback) {
       //find hospitals
-      if (req.query.toHospitalName!='0') {
+      if (req.query.toHospitalName != '0') {
         var findHospParams = {
           dbStatus: 'N',
           name: {
@@ -1855,7 +1883,7 @@ module.exports = {
 
       if (req.query.hospitalid) {
         findParams.to_hosp_id = req.query.hospitalid;
-        console.log("hos:"+req.query.hospitalid)
+        console.log("hos:" + req.query.hospitalid)
       }
 
       console.log(findParams)
